@@ -29,6 +29,7 @@
       <button class="active" data-view="dashboard"><span>⌂</span> Dashboard</button>
       <button data-view="timer"><span>◴</span> Focus timer</button>
       <button data-view="live" data-requires="vip"><span>◉</span> Live room <em id="sideLive">0</em></button>
+      <button data-view="insights"><span>◫</span> Student insights</button>
       <button data-view="analytics" data-requires="premium"><span>▥</span> Analytics</button>
       <button data-view="calendar"><span>▦</span> Calendar</button>
       <button data-view="history"><span>✓</span> Daily history</button>
@@ -99,6 +100,18 @@
       <div class="learner-grid" id="liveGrid"></div>
     </section>
 
+
+    <section class="view" data-page="insights">
+      <div class="page-head"><div><small>REAL STUDENT INSIGHTS</small><h1>Study together, grow together</h1><p>किस learner ने किस तारीख को कौन-सा subject कितनी देर पढ़ा—real timer data।</p></div><input id="insightDate" type="date"></div>
+      <div class="insights-layout">
+        <article class="panel insights-users"><div class="panel-head"><div><small>LEARNERS</small><h2>All real students</h2></div><span id="insightUserCount">0</span></div><input class="insight-search" id="insightSearch" placeholder="Search learner"><div id="insightUserList" class="insight-user-list"></div></article>
+        <article class="panel insight-detail" id="insightDetail"><div class="insight-profile"><span class="avatar big" id="insightAvatar">?</span><div><small>SELECTED LEARNER</small><h2 id="insightName">Select a student</h2><p id="insightStatus">Real study record will appear here.</p></div></div>
+          <div class="stats-grid insight-summary"><article class="stat accent"><span>Selected date</span><strong id="insightDayTotal">0m</strong></article><article class="stat"><span>Sessions</span><strong id="insightSessionCount">0</strong></article><article class="stat"><span>This week</span><strong id="insightWeekTotal">0m</strong></article><article class="stat"><span>Live now</span><strong id="insightLive">No</strong></article></div>
+          <div class="insight-columns"><div><small>SUBJECT BREAKDOWN</small><div id="insightSubjects" class="subject-breakdown"></div></div><div><small>SESSION TIMELINE</small><div id="insightTimeline" class="history-list"></div></div></div>
+        </article>
+      </div>
+    </section>
+
     <section class="view" data-page="analytics">
       <div class="page-head"><div><small>ANALYTICS</small><h1>Know your study pattern</h1><p>Time, subjects और consistency का साफ breakdown।</p></div><select id="analyticsRange"><option value="7">Last 7 days</option><option value="30">Last 30 days</option></select></div>
       <div class="stats-grid"><article class="stat accent"><span>Total focus</span><strong id="analyticsTotal">0h</strong></article><article class="stat"><span>Daily average</span><strong id="analyticsAverage">0m</strong></article><article class="stat"><span>Best day</span><strong id="analyticsBest">—</strong></article><article class="stat"><span>Sessions</span><strong id="analyticsSessions">0</strong></article></div>
@@ -143,7 +156,7 @@
 <nav class="mobile-dock">
   <button data-view="dashboard"><span>⌂</span><small>Home</small></button>
   <button data-view="timer"><span>◴</span><small>Timer</small></button>
-  <button data-view="live" data-requires="vip"><span>◉</span><small>Live</small></button>
+  <button data-view="insights"><span>◫</span><small>Insights</small></button>
   <button data-view="history"><span>✓</span><small>History</small></button>
   <button data-view="premium"><span>✦</span><small>VIP</small></button>
 </nav>
@@ -156,5 +169,5 @@
 <dialog id="groupDialog"><button class="dialog-x" data-close>×</button><small>NEW STUDY GROUP</small><h2>Create your focus circle</h2><form id="groupForm"><label class="field">Group name<input id="groupName" required maxlength="50"></label><label class="field">Weekly goal (hours)<input id="groupGoal" type="number" min="1" max="200" value="35"></label><label class="field">Privacy<select id="groupPrivacy"><option value="public">Public</option><option value="private">Private</option></select></label><button class="primary wide">Create group</button></form></dialog>
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
 <script src="ypt.js" type="module"></script>
-<script src="rathod-live-sync.js" defer></script><script src="gyaan-auth-fix.js" defer></script></body>
+</body>
 </html>
