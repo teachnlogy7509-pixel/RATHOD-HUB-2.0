@@ -280,3 +280,16 @@ language sql stable security definer set search_path=public as $$
 $$;
 revoke all on function public.get_ypt_user_insight(uuid,date) from public,anon;
 grant execute on function public.get_ypt_user_insight(uuid,date) to authenticated;
+
+create or replace function public.get_ypt_user_month_totals(p_user_id uuid,p_month date)
+returns table(study_date date,total_seconds bigint,sessions bigint)
+language sql stable security definer set search_path=public as $$
+  select s.session_date,sum(s.duration_seconds)::bigint,count(*)::bigint
+  from public.ypt_focus_sessions s
+  where auth.uid() is not null and s.user_id=p_user_id
+    and s.session_date>=date_trunc('month',p_month)::date
+    and s.session_date<(date_trunc('month',p_month)+interval '1 month')::date
+  group by s.session_date order by s.session_date;
+$$;
+revoke all on function public.get_ypt_user_month_totals(uuid,date) from public,anon;
+grant execute on function public.get_ypt_user_month_totals(uuid,date) to authenticated;

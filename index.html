@@ -107,7 +107,7 @@
         <article class="panel insights-users"><div class="panel-head"><div><small>LEARNERS</small><h2>All real students</h2></div><span id="insightUserCount">0</span></div><input class="insight-search" id="insightSearch" placeholder="Search learner"><div id="insightUserList" class="insight-user-list"></div></article>
         <article class="panel insight-detail" id="insightDetail"><div class="insight-profile"><span class="avatar big" id="insightAvatar">?</span><div><small>SELECTED LEARNER</small><h2 id="insightName">Select a student</h2><p id="insightStatus">Real study record will appear here.</p></div></div>
           <div class="stats-grid insight-summary"><article class="stat accent"><span>Selected date</span><strong id="insightDayTotal">0m</strong></article><article class="stat"><span>Sessions</span><strong id="insightSessionCount">0</strong></article><article class="stat"><span>This week</span><strong id="insightWeekTotal">0m</strong></article><article class="stat"><span>Live now</span><strong id="insightLive">No</strong></article></div>
-          <div class="insight-columns"><div><small>SUBJECT BREAKDOWN</small><div id="insightSubjects" class="subject-breakdown"></div></div><div><small>SESSION TIMELINE</small><div id="insightTimeline" class="history-list"></div></div></div>
+          <div class="insight-study-calendar"><div class="panel-head"><div><small>STUDY CALENDAR</small><h2>Tap any date</h2></div><div class="insight-month-nav"><button id="insightPrevMonth">‹</button><b id="insightMonthLabel"></b><button id="insightNextMonth">›</button></div></div><div class="insight-calendar-week"><span>Mon</span><span>Tue</span><span>Wed</span><span>Thu</span><span>Fri</span><span>Sat</span><span>Sun</span></div><div id="insightCalendar" class="insight-calendar"></div></div><div class="insight-columns"><div><small>SUBJECT BREAKDOWN</small><div id="insightSubjects" class="subject-breakdown"></div></div><div><small>SESSION TIMELINE</small><div id="insightTimeline" class="history-list"></div></div></div>
         </article>
       </div>
     </section>
@@ -169,5 +169,5 @@
 <dialog id="groupDialog"><button class="dialog-x" data-close>×</button><small>NEW STUDY GROUP</small><h2>Create your focus circle</h2><form id="groupForm"><label class="field">Group name<input id="groupName" required maxlength="50"></label><label class="field">Weekly goal (hours)<input id="groupGoal" type="number" min="1" max="200" value="35"></label><label class="field">Privacy<select id="groupPrivacy"><option value="public">Public</option><option value="private">Private</option></select></label><button class="primary wide">Create group</button></form></dialog>
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
 <script src="ypt.js" type="module"></script>
-<script src="rathod-compat.js" defer></script></body>
+</body>
 </html>
