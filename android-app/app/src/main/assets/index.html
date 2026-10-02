@@ -40,6 +40,7 @@
       <button data-view="groups" data-requires="premium"><span>♧</span> Study groups</button>
       <button data-view="leaderboard" data-requires="vip"><span>♛</span> Leaderboard</button>
       <button data-view="premium" class="premium-nav"><span>✦</span> Gold VIP Pass</button>
+      <button data-view="community" data-requires="vip" class="community-nav"><span>♨</span> VIP Community</button>
       <button data-view="admin" id="adminNav" class="hidden"><span>⚡</span> Admin panel</button>
       <button data-view="more" class="help-nav"><span>?</span> Help & Support</button>
     </nav>
@@ -56,7 +57,7 @@
         <header class="mobile-focus-hero"><div class="mobile-hero-top"><button id="mobileHeroMenu">☰</button><b id="mobileHeroDate">Today</b><span id="mobileDday">D-0</span></div><div class="mobile-total-label">TODAY FOCUS</div><strong id="mobileTotalTime">00:00:00</strong><div class="mobile-period-tabs"><button class="active" data-view="dashboard">Day</button><button data-view="analytics" data-requires="premium">Week</button><button data-view="calendar">Month</button></div></header>
         <div class="mobile-active-session hidden" id="mobileActiveSession"><div><small>NOW STUDYING</small><b id="mobileActiveSubject">Physics</b><time id="mobileActiveTime">00:00:00</time></div><button id="mobilePauseSession">Ⅱ</button><button id="mobileFinishSession">■</button></div>
         <section class="mobile-subject-section"><div class="mobile-section-head"><div><small>SUBJECTS & TODOS</small><h2>Study and todo</h2></div><button id="mobileAddTodo">＋</button></div><div id="mobileSubjectList" class="mobile-subject-list"></div></section>
-        <button class="mobile-insight-banner" data-view="insights"><span>◫</span><div><b>Student Insights</b><small>Tap any learner · choose any date · see subjects</small></div><i>›</i></button>
+        <div class="mobile-feature-grid"><button class="mobile-insight-banner" data-view="insights"><span>◫</span><div><b>Student Insights</b><small>Any learner · any date</small></div><i>›</i></button><button class="mobile-insight-banner community-shortcut" data-view="community" data-requires="vip"><span>♨</span><div><b>VIP Community</b><small>Post · react · reply</small></div><i>›</i></button></div>
       </div>
       <div class="page-head"><div><small id="todayLabel"></small><h1>Ready to focus?</h1><p>आज की consistency ही कल का result बनेगी।</p></div><button class="primary" data-view="timer">Start studying <span>→</span></button></div>
       <article class="membership-strip" id="membershipStrip"><div><span id="membershipIcon">◇</span><div><small>YOUR ACCESS</small><b id="membershipTitle">Free plan</b><p id="membershipSubtitle">Login and redeem a code to unlock Premium or VIP.</p></div></div><button class="primary" data-view="premium">View access</button></article>
@@ -143,6 +144,15 @@
       <div class="history-grid"><article class="panel"><div class="panel-head"><div><small>WORK LOG</small><h2>Tasks: done & not done</h2></div></div><div id="historyTasks" class="history-list"></div></article><article class="panel"><div class="panel-head"><div><small>FOCUS LOG</small><h2>Subject sessions</h2></div></div><div id="historySessions" class="history-list"></div></article></div>
     </section>
 
+
+    <section class="view community-view" data-page="community">
+      <div class="page-head community-head"><div><small>VIP MEMBERS ONLY</small><h1>Community</h1><p>अपनी progress share करें, 6 reactions दें और हर comment के अंदर reply करें।</p></div><button class="primary" id="newCommunityPost">＋ Create post</button></div>
+      <div class="community-layout">
+        <aside class="panel community-about"><span class="community-crown">♛</span><h2>Rathod VIP Circle</h2><p>Study updates, motivation और useful discussion—सब app के अंदर।</p><div><b>⚡ Realtime</b><small>Posts, reactions और replies तुरंत update होते हैं।</small></div><div><b>🔒 VIP only</b><small>केवल active VIP members पढ़ और post कर सकते हैं।</small></div><button class="primary wide" id="newCommunityPostSide">Write a post</button></aside>
+        <div><div id="communityStatus" class="community-status"></div><div id="communityFeed" class="community-feed"><div class="empty-real"><b>Loading VIP Community…</b>Please wait.</div></div></div>
+      </div>
+    </section>
+
     <section class="view" data-page="groups">
       <div class="page-head"><div><small>STUDY GROUPS</small><h1>Small teams, stronger focus</h1><p>Private या public group में weekly target पूरा करें।</p></div><button class="primary" id="createGroupBtn">＋ Create group</button></div>
       <div class="group-grid" id="groupGrid"></div>
@@ -213,6 +223,8 @@
 <dialog id="groupDialog"><button class="dialog-x" data-close>×</button><small>NEW STUDY GROUP</small><h2>Create your focus circle</h2><form id="groupForm"><label class="field">Group name<input id="groupName" required maxlength="50"></label><label class="field">Weekly goal (hours)<input id="groupGoal" type="number" min="1" max="200" value="35"></label><label class="field">Privacy<select id="groupPrivacy"><option value="public">Public</option><option value="private">Private</option></select></label><button class="primary wide">Create group</button></form></dialog>
 
 
+<dialog id="communityPostDialog"><button class="dialog-x" data-close>×</button><small>VIP COMMUNITY</small><h2>Create a post</h2><p>अपनी study progress, question या motivation share करें।</p><form id="communityPostForm"><label class="field">Post<textarea id="communityPostBody" required maxlength="1200" rows="6" placeholder="What are you studying today?"></textarea></label><button class="primary wide">Publish to community</button><p id="communityPostStatus" class="form-status"></p></form></dialog>
+
 <dialog id="accountDialog"><button class="dialog-x" data-close>×</button><small>ACCOUNT SETTINGS</small><h2>Name & password</h2><p>Recovery email verify करने के बाद changes तुरंत save होंगी। कोई OTP नहीं भेजा जाएगा।</p><form id="accountForm"><label class="field">Recovery email<input id="accountRecoveryEmail" type="email" required></label><label class="field">New name / username<input id="accountNewName" minlength="3" maxlength="40" placeholder="Leave unchanged if not needed"></label><label class="field">New password<input id="accountNewPassword" type="password" minlength="6" placeholder="Leave blank if not changing"></label><button class="primary wide">Verify & save changes</button><p id="accountStatus" class="form-status"></p></form></dialog>
 <dialog id="privateChatDialog"><button class="dialog-x" data-close>×</button><small>PRIVATE MESSAGE</small><h2 id="privateChatName">Student</h2><div id="privateChatMessages" class="private-chat-messages"></div><form id="privateChatForm" class="private-chat-form"><input id="privateChatInput" maxlength="300" required placeholder="Say hi or hello…"><button class="primary">➤</button></form></dialog>
 
@@ -223,5 +235,6 @@
 
 <script src="vendor/supabase.min.js"></script>
 <script src="ypt.js" type="module"></script>
+<script src="community.js" type="module"></script>
 <script src="rathod-compat.js" defer></script><script src="rathod-live-sync.js" defer></script><script src="gyaan-auth-fix.js" defer></script></body>
 </html>
