@@ -11,7 +11,7 @@
 <div id="app" class="app">
   <header class="topbar">
     <button class="icon-btn mobile-only" id="menuBtn" aria-label="Menu">≡</button>
-    <a class="brand" href="#dashboard"><span class="brand-mark">R</span><span>YPT STUDY <b>BY RATHOD</b><small>PREMIUM FOCUS APP</small></span></a>
+    <a class="brand" href="#dashboard"><span class="brand-mark">YR</span><span>YPT STUDY <b>BY RATHOD</b><small>PREMIUM FOCUS APP</small></span></a>
     <div class="live-chip"><i></i><span id="liveCount">0</span> studying now</div>
     <nav class="top-actions">
       <button class="icon-btn" data-open="search">⌕</button>
@@ -33,7 +33,7 @@
       <button data-view="calendar"><span>▦</span> Calendar</button>
       <button data-view="groups" data-requires="premium"><span>♧</span> Study groups</button>
       <button data-view="leaderboard" data-requires="vip"><span>♛</span> Leaderboard</button>
-      <button data-view="premium" class="premium-nav"><span>✦</span> Premium & VIP</button>
+      <button data-view="premium" class="premium-nav"><span>✦</span> Gold VIP Pass</button>
     </nav>
     <div class="side-bottom">
       <button data-open="settings"><span>⚙</span> Settings</button>
@@ -120,7 +120,7 @@
     </section>
 
     <section class="view" data-page="premium">
-      <div class="page-head"><div><small>RATHOD ACCESS</small><h1>Premium & VIP</h1><p>अपने account पर secure coupon से access activate करें।</p></div><span class="plan-badge large" id="premiumCurrentBadge">FREE</span></div>
+      <div class="page-head"><div><small>YPT STUDY BY RATHOD · GOLD ACCESS</small><h1>Gold Premium & VIP</h1><p>Secure coupon से Gold Premium या VIP access activate करें।</p></div><span class="plan-badge large" id="premiumCurrentBadge">FREE</span></div>
       <article class="access-status panel"><div class="access-orb" id="accessOrb">◇</div><div><small>CURRENT PLAN</small><h2 id="accessPlanName">Free</h2><p id="accessExpiry">No active paid access</p></div><button class="secondary" id="refreshAccess">Refresh status</button></article>
       <div class="plan-grid">
         <article class="plan-card"><small>START</small><h2>Free</h2><b>₹0</b><ul><li>Focus stopwatch & Pomodoro</li><li>Daily goal and tasks</li><li>Study calendar</li><li>Local-first progress</li></ul><span class="current-plan" data-plan-label="free">Current</span></article>
@@ -132,6 +132,13 @@
     </section>
   </main>
 </div>
+<nav class="mobile-dock">
+  <button data-view="dashboard"><span>⌂</span><small>Home</small></button>
+  <button data-view="timer"><span>◴</span><small>Timer</small></button>
+  <button data-view="live" data-requires="vip"><span>◉</span><small>Live</small></button>
+  <button data-view="leaderboard" data-requires="vip"><span>♛</span><small>Rank</small></button>
+  <button data-view="premium"><span>✦</span><small>VIP</small></button>
+</nav>
 
 <div class="toast" id="toast"></div>
 <dialog id="authDialog"><button class="dialog-x" data-close>×</button><div class="dialog-brand">R</div><small>SYNC YOUR PROGRESS</small><h2>Login to YPT Study by Rathod</h2><p>अपने नाम और password से login करें। आपका study data सभी devices पर sync होगा।</p><form id="authForm"><label class="field">Name / Username<input id="authName" required minlength="3" maxlength="40" autocomplete="username" placeholder="e.g. Ashish Rathod"></label><label class="field">Password<input id="authPassword" type="password" minlength="6" required autocomplete="current-password" placeholder="Minimum 6 characters"></label><p class="form-status" id="authStatus"></p><button class="primary wide" type="submit">Login</button></form><button class="text-btn" id="authToggle">New user? Create account with name</button></dialog>
@@ -140,5 +147,5 @@
 <dialog id="todoDialog"><button class="dialog-x" data-close>×</button><small>DAILY PLAN</small><h2>Add a task</h2><form id="todoForm"><label class="field">Task<input id="todoInput" maxlength="100" required placeholder="e.g. Biology NCERT chapter 3"></label><label class="field">Subject<select id="todoSubject"></select></label><button class="primary wide">Add task</button></form></dialog>
 <dialog id="groupDialog"><button class="dialog-x" data-close>×</button><small>NEW STUDY GROUP</small><h2>Create your focus circle</h2><form id="groupForm"><label class="field">Group name<input id="groupName" required maxlength="50"></label><label class="field">Weekly goal (hours)<input id="groupGoal" type="number" min="1" max="200" value="35"></label><label class="field">Privacy<select id="groupPrivacy"><option value="public">Public</option><option value="private">Private</option></select></label><button class="primary wide">Create group</button></form></dialog>
 <script src="ypt.js" type="module"></script>
-<script src="rathod-live-sync.js" defer></script><script src="gyaan-auth-fix.js" defer></script></body>
+</body>
 </html>

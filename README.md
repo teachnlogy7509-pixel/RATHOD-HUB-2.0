@@ -1,6 +1,6 @@
 # YPT Study by Rathod
 
-A premium, responsive YPT-style study app with real Supabase data and secure Premium/VIP access.
+A black, gold and red premium YPT-style study app with real Supabase data and secure Premium/VIP access.
 
 ## Included
 
