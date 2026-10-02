@@ -16,6 +16,8 @@ A black, gold and red premium YPT-style study app with real Supabase data and se
 - YPT-style clickable live-seat cards: tap a learner to open their insights
 - Per-user monthly study calendar; tap any date for subject and session details
 - Mobile dock and tablet-responsive insight layouts
+- Mobile-first home with today total, D-day, subject play buttons, subject time and todo progress
+- Phone-native timer, live seats, planner, calendar and insights layouts
 - Real Premium study groups
 - Real VIP weekly leaderboard
 - Secure Premium/VIP memberships, expiry and coupon redemption RPC

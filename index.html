@@ -45,6 +45,12 @@
 
   <main class="main">
     <section class="view active" data-page="dashboard">
+
+      <div class="mobile-ypt-home">
+        <header class="mobile-focus-hero"><div class="mobile-hero-top"><button id="mobileHeroMenu">☰</button><b id="mobileHeroDate">Today</b><span id="mobileDday">D-0</span></div><div class="mobile-total-label">TODAY FOCUS</div><strong id="mobileTotalTime">00:00:00</strong><div class="mobile-period-tabs"><button class="active" data-view="dashboard">Day</button><button data-view="analytics" data-requires="premium">Week</button><button data-view="calendar">Month</button></div></header>
+        <section class="mobile-subject-section"><div class="mobile-section-head"><div><small>SUBJECTS & TODOS</small><h2>Study and todo</h2></div><button id="mobileAddTodo">＋</button></div><div id="mobileSubjectList" class="mobile-subject-list"></div></section>
+        <button class="mobile-insight-banner" data-view="insights"><span>◫</span><div><b>Student Insights</b><small>Tap any learner · choose any date · see subjects</small></div><i>›</i></button>
+      </div>
       <div class="page-head"><div><small id="todayLabel"></small><h1>Ready to focus?</h1><p>आज की consistency ही कल का result बनेगी।</p></div><button class="primary" data-view="timer">Start studying <span>→</span></button></div>
       <article class="membership-strip" id="membershipStrip"><div><span id="membershipIcon">◇</span><div><small>YOUR ACCESS</small><b id="membershipTitle">Free plan</b><p id="membershipSubtitle">Login and redeem a code to unlock Premium or VIP.</p></div></div><button class="primary" data-view="premium">View access</button></article>
       <div class="stats-grid">
@@ -155,10 +161,10 @@
 </div>
 <nav class="mobile-dock">
   <button data-view="dashboard"><span>⌂</span><small>Home</small></button>
-  <button data-view="timer"><span>◴</span><small>Timer</small></button>
+  <button data-view="history"><span>✓</span><small>Planner</small></button>
+  <button class="mobile-center-timer" data-view="timer"><span>▶</span><small>Focus</small></button>
+  <button data-view="live" data-requires="vip"><span>◉</span><small>Live</small></button>
   <button data-view="insights"><span>◫</span><small>Insights</small></button>
-  <button data-view="history"><span>✓</span><small>History</small></button>
-  <button data-view="premium"><span>✦</span><small>VIP</small></button>
 </nav>
 
 <div class="toast" id="toast"></div>
@@ -169,5 +175,5 @@
 <dialog id="groupDialog"><button class="dialog-x" data-close>×</button><small>NEW STUDY GROUP</small><h2>Create your focus circle</h2><form id="groupForm"><label class="field">Group name<input id="groupName" required maxlength="50"></label><label class="field">Weekly goal (hours)<input id="groupGoal" type="number" min="1" max="200" value="35"></label><label class="field">Privacy<select id="groupPrivacy"><option value="public">Public</option><option value="private">Private</option></select></label><button class="primary wide">Create group</button></form></dialog>
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
 <script src="ypt.js" type="module"></script>
-<script src="rathod-compat.js" defer></script></body>
+</body>
 </html>
