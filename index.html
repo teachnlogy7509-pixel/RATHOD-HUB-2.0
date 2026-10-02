@@ -5,17 +5,20 @@
   <meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
   <meta name="theme-color" content="#14151a">
   <title>YPT Study by Rathod</title>
+  <link rel="manifest" href="manifest.webmanifest">
+  <link rel="icon" href="icons/ypt-logo.svg" type="image/svg+xml">
   <link rel="stylesheet" href="ypt.css">
+  <script>if("serviceWorker" in navigator){window.addEventListener("load",()=>navigator.serviceWorker.register("sw.js"))}</script>
 </head>
 <body>
 <div id="app" class="app">
   <header class="topbar">
     <button class="icon-btn mobile-only" id="menuBtn" aria-label="Menu">≡</button>
-    <a class="brand" href="#dashboard"><span class="brand-mark">YR</span><span>YPT STUDY <b>BY RATHOD</b><small>PREMIUM FOCUS APP</small></span></a>
+    <a class="brand" href="#dashboard"><img class="brand-app-icon" src="icons/ypt-logo.svg" alt="YPT"><span>YPT STUDY <b>BY RATHOD</b><small>PREMIUM FOCUS APP</small></span></a>
     <div class="live-chip"><i></i><span id="liveCount">0</span> studying now</div>
     <nav class="top-actions">
       <button class="icon-btn" data-open="search">⌕</button>
-      <button class="icon-btn" data-open="notifications">♢</button>
+      <button class="icon-btn notification-btn" id="notificationBtn" aria-label="Notifications">🔔<i id="notificationDot"></i></button>
       <span class="plan-badge" id="planBadge">FREE</span><button class="profile-btn" id="profileBtn"><span class="avatar" id="topAvatar">R</span><span id="topName">Guest</span></button>
     </nav>
   </header>
@@ -36,6 +39,8 @@
       <button data-view="groups" data-requires="premium"><span>♧</span> Study groups</button>
       <button data-view="leaderboard" data-requires="vip"><span>♛</span> Leaderboard</button>
       <button data-view="premium" class="premium-nav"><span>✦</span> Gold VIP Pass</button>
+      <button data-view="admin" id="adminNav" class="hidden"><span>⚡</span> Admin panel</button>
+      <button data-view="more"><span>ⓘ</span> About & support</button>
     </nav>
     <div class="side-bottom">
       <button data-open="settings"><span>⚙</span> Settings</button>
@@ -48,6 +53,7 @@
 
       <div class="mobile-ypt-home">
         <header class="mobile-focus-hero"><div class="mobile-hero-top"><button id="mobileHeroMenu">☰</button><b id="mobileHeroDate">Today</b><span id="mobileDday">D-0</span></div><div class="mobile-total-label">TODAY FOCUS</div><strong id="mobileTotalTime">00:00:00</strong><div class="mobile-period-tabs"><button class="active" data-view="dashboard">Day</button><button data-view="analytics" data-requires="premium">Week</button><button data-view="calendar">Month</button></div></header>
+        <div class="mobile-active-session hidden" id="mobileActiveSession"><div><small>NOW STUDYING</small><b id="mobileActiveSubject">Physics</b><time id="mobileActiveTime">00:00:00</time></div><button id="mobilePauseSession">Ⅱ</button><button id="mobileFinishSession">■</button></div>
         <section class="mobile-subject-section"><div class="mobile-section-head"><div><small>SUBJECTS & TODOS</small><h2>Study and todo</h2></div><button id="mobileAddTodo">＋</button></div><div id="mobileSubjectList" class="mobile-subject-list"></div></section>
         <button class="mobile-insight-banner" data-view="insights"><span>◫</span><div><b>Student Insights</b><small>Tap any learner · choose any date · see subjects</small></div><i>›</i></button>
       </div>
@@ -103,7 +109,7 @@
     <section class="view" data-page="live">
       <div class="page-head"><div><small>REALTIME STUDY ROOM</small><h1><span id="liveTitleCount">0</span> learners focusing</h1><p>साथ पढ़ें, बिना chat distraction के।</p></div><button class="primary" data-view="timer">Join with timer</button></div>
       <div class="filter-row"><button class="active" data-live-filter="all">All</button><button data-live-filter="neet">NEET</button><button data-live-filter="physics">Physics</button><button data-live-filter="chemistry">Chemistry</button><button data-live-filter="biology">Biology</button></div>
-      <div class="learner-grid" id="liveGrid"></div>
+      <div class="live-room-layout"><div class="learner-grid" id="liveGrid"></div><article class="panel live-chat"><div class="panel-head"><div><small>REALTIME CHAT</small><h2>Live room chat</h2></div><span class="live-badge">● LIVE</span></div><div id="liveChatMessages" class="live-chat-messages"></div><form id="liveChatForm"><input id="liveChatInput" maxlength="300" placeholder="Message live learners…" required><button class="primary">➤</button></form></article></div>
     </section>
 
 
@@ -146,6 +152,18 @@
       <div class="podium" id="podium"></div><article class="panel rank-table"><div class="rank-row rank-head"><span>Rank</span><span>Learner</span><span>Streak</span><span>Focus</span></div><div id="rankRows"></div></article>
     </section>
 
+
+    <section class="view" data-page="admin">
+      <div class="page-head"><div><small>ADMIN CONTROL</small><h1>Admin panel</h1><p>Notification, app update और APK link सभी users को publish करें।</p></div><span class="plan-badge vip">ADMIN</span></div>
+      <div class="admin-grid"><article class="panel"><small>PUSH ANNOUNCEMENT</small><h2>Send notification</h2><form id="adminNotificationForm" class="stack-form"><input id="adminNotifyTitle" required maxlength="80" placeholder="Notification title"><textarea id="adminNotifyBody" required maxlength="500" placeholder="Message for all users"></textarea><select id="adminNotifyType"><option value="notice">Notice</option><option value="maintenance">Maintenance</option><option value="event">Event</option></select><button class="primary">Publish notification</button></form></article><article class="panel"><small>APP RELEASE</small><h2>Publish app update</h2><form id="adminUpdateForm" class="stack-form"><input id="adminVersion" required placeholder="Version e.g. 2.1.0"><input id="adminUpdateTitle" required placeholder="Update title"><textarea id="adminUpdateNotes" required placeholder="What changed?"></textarea><input id="adminApkUrl" type="url" placeholder="APK download URL"><label class="check-line"><input id="adminForceUpdate" type="checkbox"> Force update notice</label><button class="primary">Publish update</button></form></article></div>
+      <article class="panel admin-feed"><div class="panel-head"><div><small>RECENT</small><h2>Published items</h2></div></div><div id="adminPublishedList" class="history-list"></div></article>
+    </section>
+
+    <section class="view" data-page="more">
+      <div class="page-head"><div><small>YPT STUDY BY RATHOD</small><h1>Help, legal & contact</h1><p>App information, support और policies एक जगह।</p></div></div>
+      <div class="more-grid"><article class="panel contact-card"><div class="app-logo-large"><img src="icons/ypt-logo.svg" alt="YPT Study by Rathod logo"></div><h2>YPT Study by Rathod</h2><p>A premium focus, live study and insights app.</p><a class="contact-link" href="https://t.me/Ashish_Thakur1" target="_blank">✈ Contact Ashish Thakur</a><a class="contact-link" href="https://t.me/YPTSTUDY1" target="_blank">♧ Join Telegram group</a></article><article class="panel"><small>HELP CENTER</small><h2>Frequently asked questions</h2><div class="faq-list"><details><summary>Timer data कब save होता है?</summary><p>Finish दबाने पर subject, date और duration Supabase में save होते हैं।</p></details><details><summary>Live student कब दिखता है?</summary><p>Logged-in user timer start करता है तो heartbeat के साथ live room में दिखाई देता है।</p></details><details><summary>VIP coupon कैसे redeem करें?</summary><p>Gold VIP Pass में active code डालें। Coupon database से server-side validate होता है।</p></details><details><summary>Password भूल जाएँ तो?</summary><p>Login screen पर Forgot password से recovery email पर reset link भेजें।</p></details></div></article><article class="panel legal-card"><small>LEGAL</small><h2>Policies</h2><button data-legal="terms">Terms & Conditions</button><button data-legal="privacy">Privacy Policy</button><button data-legal="community">Community Guidelines</button></article></div>
+    </section>
+
     <section class="view" data-page="premium">
       <div class="page-head"><div><small>YPT STUDY BY RATHOD · GOLD ACCESS</small><h1>Gold Premium & VIP</h1><p>Secure coupon से Gold Premium या VIP access activate करें।</p></div><span class="plan-badge large" id="premiumCurrentBadge">FREE</span></div>
       <article class="access-status panel"><div class="access-orb" id="accessOrb">◇</div><div><small>CURRENT PLAN</small><h2 id="accessPlanName">Free</h2><p id="accessExpiry">No active paid access</p></div><button class="secondary" id="refreshAccess">Refresh status</button></article>
@@ -168,12 +186,18 @@
 </nav>
 
 <div class="toast" id="toast"></div>
-<dialog id="authDialog"><button class="dialog-x" data-close>×</button><div class="dialog-brand">R</div><small>SYNC YOUR PROGRESS</small><h2>Login to YPT Study by Rathod</h2><p>अपने नाम और password से login करें। आपका study data सभी devices पर sync होगा।</p><form id="authForm"><label class="field">Name / Username<input id="authName" required minlength="3" maxlength="40" autocomplete="username" placeholder="e.g. Ashish Rathod"></label><label class="field">Password<input id="authPassword" type="password" minlength="6" required autocomplete="current-password" placeholder="Minimum 6 characters"></label><p class="form-status" id="authStatus"></p><button class="primary wide" type="submit">Login</button></form><button class="text-btn" id="authToggle">New user? Create account with name</button></dialog>
+<dialog id="authDialog"><button class="dialog-x" data-close>×</button><div class="dialog-brand">R</div><small>SYNC YOUR PROGRESS</small><h2>Login to YPT Study by Rathod</h2><p>अपने नाम और password से login करें। आपका study data सभी devices पर sync होगा।</p><form id="authForm"><label class="field">Name / Username<input id="authName" required minlength="3" maxlength="40" autocomplete="username" placeholder="e.g. Ashish Rathod"></label><label class="field recovery-field hidden">Recovery email<input id="authRecoveryEmail" type="email" autocomplete="email" placeholder="For forgot password"></label><label class="field">Password<input id="authPassword" type="password" minlength="6" required autocomplete="current-password" placeholder="Minimum 6 characters"></label><p class="form-status" id="authStatus"></p><button class="primary wide" type="submit">Login</button></form><button class="text-btn" id="authToggle">New user? Create account with name</button><button class="text-btn" id="forgotPasswordBtn">Forgot password?</button></dialog>
 <dialog id="settingsDialog"><button class="dialog-x" data-close>×</button><small>APP SETTINGS</small><h2>Connect Supabase</h2><p>Project URL और publishable/anon key browser में local save होंगे। Service-role key कभी न डालें।</p><form id="settingsForm"><label class="field">Supabase URL<input id="configUrl" placeholder="https://xxxx.supabase.co"></label><label class="field">Publishable key<input id="configKey" placeholder="sb_publishable_..."></label><label class="field">Display name<input id="displayName" maxlength="40"></label><button class="primary wide" type="submit">Save & reload</button></form><button class="danger-link" id="clearLocalData">Clear local study data</button></dialog>
 <dialog id="goalDialog"><button class="dialog-x" data-close>×</button><small>DAILY TARGET</small><h2>Set your focus goal</h2><form id="goalForm"><label class="field">Hours per day<input id="goalHours" type="number" min="1" max="18" step="0.5" value="6"></label><button class="primary wide">Save goal</button></form></dialog>
 <dialog id="todoDialog"><button class="dialog-x" data-close>×</button><small>DAILY PLAN</small><h2>Add a task</h2><form id="todoForm"><label class="field">Task<input id="todoInput" maxlength="100" required placeholder="e.g. Biology NCERT chapter 3"></label><label class="field">Subject<select id="todoSubject"></select></label><button class="primary wide">Add task</button></form></dialog>
 <dialog id="groupDialog"><button class="dialog-x" data-close>×</button><small>NEW STUDY GROUP</small><h2>Create your focus circle</h2><form id="groupForm"><label class="field">Group name<input id="groupName" required maxlength="50"></label><label class="field">Weekly goal (hours)<input id="groupGoal" type="number" min="1" max="200" value="35"></label><label class="field">Privacy<select id="groupPrivacy"><option value="public">Public</option><option value="private">Private</option></select></label><button class="primary wide">Create group</button></form></dialog>
+
+<dialog id="notificationsDialog"><button class="dialog-x" data-close>×</button><small>NOTIFICATIONS</small><h2>Updates & notices</h2><div id="notificationList" class="notification-list"></div></dialog>
+<dialog id="forgotDialog"><button class="dialog-x" data-close>×</button><small>ACCOUNT RECOVERY</small><h2>Forgot password</h2><p>Account बनाते समय दिया recovery email डालें।</p><form id="forgotForm"><label class="field">Recovery email<input id="forgotEmail" type="email" required></label><button class="primary wide">Send reset link</button><p id="forgotStatus" class="form-status"></p></form></dialog>
+<dialog id="newPasswordDialog"><small>SET NEW PASSWORD</small><h2>Create a new password</h2><form id="newPasswordForm"><label class="field">New password<input id="newPassword" type="password" minlength="6" required></label><button class="primary wide">Update password</button><p id="newPasswordStatus" class="form-status"></p></form></dialog>
+<dialog id="legalDialog"><button class="dialog-x" data-close>×</button><small>YPT STUDY BY RATHOD</small><h2 id="legalTitle">Policy</h2><div id="legalContent" class="legal-content"></div></dialog>
+
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
 <script src="ypt.js" type="module"></script>
-<script src="rathod-compat.js" defer></script></body>
+</body>
 </html>

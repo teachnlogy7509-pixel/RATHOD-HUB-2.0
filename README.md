@@ -59,3 +59,15 @@ Use `vip` instead of `premium` for VIP access. Users redeem codes from the Premi
 - `ypt.js` — timer, real data sync and plan gates
 - `supabase/ypt_full_schema.sql` — tables, RLS, realtime, memberships and RPCs
 - `community.html` — previous community page preserved unchanged
+
+## Realtime and administration
+
+- Realtime live-room chat with Supabase Realtime
+- Admin-only notification and app-update publishing panel
+- Notification bell and update/APK links
+- Username login with recovery email and forgot-password flow
+- FAQ, Terms, Privacy, Community Guidelines and Telegram contact links
+- Installable PWA with original watermark-free YPT by Rathod logo
+- Android WebView project and GitHub Actions APK build/release workflow
+
+Run `supabase/ypt_app_features.sql`, then edit and run `supabase/ypt_make_admin.sql` with the exact admin login name.
