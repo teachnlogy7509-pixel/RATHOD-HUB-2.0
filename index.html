@@ -4,14 +4,14 @@
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
   <meta name="theme-color" content="#14151a">
-  <title>RATHOD Focus · YPT Study</title>
+  <title>YPT Study by Rathod</title>
   <link rel="stylesheet" href="ypt.css">
 </head>
 <body>
 <div id="app" class="app">
   <header class="topbar">
     <button class="icon-btn mobile-only" id="menuBtn" aria-label="Menu">≡</button>
-    <a class="brand" href="#dashboard"><span class="brand-mark">R</span><span>RATHOD <b>FOCUS</b><small>STUDY TOGETHER</small></span></a>
+    <a class="brand" href="#dashboard"><span class="brand-mark">R</span><span>YPT STUDY <b>BY RATHOD</b><small>PREMIUM FOCUS APP</small></span></a>
     <div class="live-chip"><i></i><span id="liveCount">0</span> studying now</div>
     <nav class="top-actions">
       <button class="icon-btn" data-open="search">⌕</button>
@@ -34,7 +34,6 @@
       <button data-view="groups" data-requires="premium"><span>♧</span> Study groups</button>
       <button data-view="leaderboard" data-requires="vip"><span>♛</span> Leaderboard</button>
       <button data-view="premium" class="premium-nav"><span>✦</span> Premium & VIP</button>
-      <a href="community.html"><span>☏</span> Community</a>
     </nav>
     <div class="side-bottom">
       <button data-open="settings"><span>⚙</span> Settings</button>
@@ -135,11 +134,11 @@
 </div>
 
 <div class="toast" id="toast"></div>
-<dialog id="authDialog"><button class="dialog-x" data-close>×</button><div class="dialog-brand">R</div><small>SYNC YOUR PROGRESS</small><h2>Login to RATHOD Focus</h2><p>Local mode में timer चलता रहेगा। Login से सभी devices sync होंगे।</p><form id="authForm"><label class="field name-field hidden">Name<input id="authName" autocomplete="name"></label><label class="field">Email<input id="authEmail" type="email" required autocomplete="email"></label><label class="field">Password<input id="authPassword" type="password" minlength="6" required autocomplete="current-password"></label><p class="form-status" id="authStatus"></p><button class="primary wide" type="submit">Login</button></form><button class="text-btn" id="authToggle">New here? Create account</button></dialog>
+<dialog id="authDialog"><button class="dialog-x" data-close>×</button><div class="dialog-brand">R</div><small>SYNC YOUR PROGRESS</small><h2>Login to YPT Study by Rathod</h2><p>अपने नाम और password से login करें। आपका study data सभी devices पर sync होगा।</p><form id="authForm"><label class="field">Name / Username<input id="authName" required minlength="3" maxlength="40" autocomplete="username" placeholder="e.g. Ashish Rathod"></label><label class="field">Password<input id="authPassword" type="password" minlength="6" required autocomplete="current-password" placeholder="Minimum 6 characters"></label><p class="form-status" id="authStatus"></p><button class="primary wide" type="submit">Login</button></form><button class="text-btn" id="authToggle">New user? Create account with name</button></dialog>
 <dialog id="settingsDialog"><button class="dialog-x" data-close>×</button><small>APP SETTINGS</small><h2>Connect Supabase</h2><p>Project URL और publishable/anon key browser में local save होंगे। Service-role key कभी न डालें।</p><form id="settingsForm"><label class="field">Supabase URL<input id="configUrl" placeholder="https://xxxx.supabase.co"></label><label class="field">Publishable key<input id="configKey" placeholder="sb_publishable_..."></label><label class="field">Display name<input id="displayName" maxlength="40"></label><button class="primary wide" type="submit">Save & reload</button></form><button class="danger-link" id="clearLocalData">Clear local study data</button></dialog>
 <dialog id="goalDialog"><button class="dialog-x" data-close>×</button><small>DAILY TARGET</small><h2>Set your focus goal</h2><form id="goalForm"><label class="field">Hours per day<input id="goalHours" type="number" min="1" max="18" step="0.5" value="6"></label><button class="primary wide">Save goal</button></form></dialog>
 <dialog id="todoDialog"><button class="dialog-x" data-close>×</button><small>DAILY PLAN</small><h2>Add a task</h2><form id="todoForm"><label class="field">Task<input id="todoInput" maxlength="100" required placeholder="e.g. Biology NCERT chapter 3"></label><label class="field">Subject<select id="todoSubject"></select></label><button class="primary wide">Add task</button></form></dialog>
 <dialog id="groupDialog"><button class="dialog-x" data-close>×</button><small>NEW STUDY GROUP</small><h2>Create your focus circle</h2><form id="groupForm"><label class="field">Group name<input id="groupName" required maxlength="50"></label><label class="field">Weekly goal (hours)<input id="groupGoal" type="number" min="1" max="200" value="35"></label><label class="field">Privacy<select id="groupPrivacy"><option value="public">Public</option><option value="private">Private</option></select></label><button class="primary wide">Create group</button></form></dialog>
 <script src="ypt.js" type="module"></script>
-<script src="rathod-compat.js" defer></script></body>
+</body>
 </html>

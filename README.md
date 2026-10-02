@@ -1,6 +1,6 @@
-# RATHOD Focus 2.0
+# YPT Study by Rathod
 
-A responsive, local-first YPT-style study app with real Supabase data and secure Premium/VIP access.
+A premium, responsive YPT-style study app with real Supabase data and secure Premium/VIP access.
 
 ## Included
 
@@ -23,8 +23,9 @@ The frontend is configured for `https://oeacgchzyilgqzaqxssh.supabase.co` with i
 
 1. Open that project's Supabase SQL Editor.
 2. Run the complete `supabase/ypt_full_schema.sql` file once.
-3. In Authentication settings, configure your Site URL and redirect URLs.
-4. Open the app and create/login to an account.
+3. In Authentication → Providers → Email, turn **Confirm email OFF** because the app uses private name-based login IDs.
+4. Configure your Site URL and redirect URLs.
+5. Open the app and create/login using name and password.
 
 Never put a service-role key in frontend code or GitHub.
 
