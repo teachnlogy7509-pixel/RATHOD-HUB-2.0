@@ -1,27 +1,34 @@
-# GyaanSetu
+# RATHOD Focus 2.0
 
-GyaanSetu is a batch-wise student community for focused learning, discussion, and doubt solving.
+A responsive, local-first YPT-style study system for RATHOD HUB.
 
-## Current batch community MVP
+## Included
 
-- Collapsible left sidebar with enrolled-batch navigation.
-- Batches: Yakeen NEET Hindi 2027, Yakeen NEET Hindi 2.0 2027, and Yakeen NEET Hindi 3.0 2027.
-- Every batch has two isolated sections: Community and Doubt Section.
-- Posts and comments are linked to a section, so content cannot cross between batches or section types.
-- Supabase Auth and role-aware batch enrollment (`student`, `teacher`, `admin`).
-- Row Level Security allows only active enrolled users to read or write a batch.
-- Streak and leaderboard UI remain available as the next layer around the community.
+- Stopwatch and Pomodoro focus timer
+- Subjects, daily goals, recent sessions and streaks
+- Realtime study-room presence after Supabase connection
+- Daily/weekly/monthly analytics and study calendar
+- Daily tasks and subject breakdown
+- Study groups and weekly leaderboard foundation
+- Supabase Auth, Realtime and RLS-ready SQL
+- Mobile and desktop layouts
+- Local mode: timer, tasks, goals and analytics work before database setup
+- Existing GyaanSetu community preserved at `community.html`
 
-## Data model
+## Connect Supabase later
 
-- `batches`: id, name, slug, description, position.
-- `sections`: id, batch_id, type (`community` or `doubt`), name.
-- `batch_enrollments`: batch_id, user_id, role, status.
-- `posts`: id, section_id, user_id, content, created_at.
-- `comments`: post_id, user_id, content, created_at.
+1. Run `supabase/ypt_full_schema.sql` in the Supabase SQL editor.
+2. Open the app → **Settings**.
+3. Paste the project URL and **publishable/anon key**.
+4. Never paste a service-role key in browser code.
+5. Create an account from the profile button and verify email if confirmation is enabled.
 
-## Stack
+## Files
 
-HTML, CSS, browser JavaScript, Supabase Auth/Postgres/RLS, and GitHub.
+- `index.html` — RATHOD Focus app
+- `ypt.css` — responsive UI
+- `ypt.js` — local-first timer and Supabase sync
+- `supabase/ypt_full_schema.sql` — YPT tables, RLS, realtime and leaderboard view
+- `community.html` — previous GyaanSetu/YPT page preserved unchanged
 
-Run `supabase/schema.sql` in the connected Supabase project before using real enrolled accounts.
+The app deliberately uses an original RATHOD Focus design rather than copying YPT branding or assets.
