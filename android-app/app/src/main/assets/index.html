@@ -17,7 +17,7 @@
     <a class="brand" href="#dashboard"><img class="brand-app-icon" src="icons/ypt-logo.svg" alt="YPT"><span>YPT STUDY <b>BY RATHOD</b><small>PREMIUM FOCUS APP</small></span></a>
     <div class="live-chip"><i></i><span id="liveCount">0</span> studying now</div>
     <nav class="top-actions">
-      <button class="icon-btn" data-open="search">⌕</button>
+      <button class="icon-btn help-top-btn" data-view="more" aria-label="Help and support" title="Help & Support">?</button>
       <button class="icon-btn notification-btn" id="notificationBtn" aria-label="Notifications">🔔<i id="notificationDot"></i></button>
       <span class="plan-badge" id="planBadge">FREE</span><button class="profile-btn" id="profileBtn"><span class="avatar" id="topAvatar">R</span><span id="topName">Guest</span></button>
     </nav>
@@ -40,7 +40,7 @@
       <button data-view="leaderboard" data-requires="vip"><span>♛</span> Leaderboard</button>
       <button data-view="premium" class="premium-nav"><span>✦</span> Gold VIP Pass</button>
       <button data-view="admin" id="adminNav" class="hidden"><span>⚡</span> Admin panel</button>
-      <button data-view="more"><span>ⓘ</span> About & support</button>
+      <button data-view="more" class="help-nav"><span>?</span> Help & Support</button>
     </nav>
     <div class="side-bottom">
       <button data-open="settings"><span>⚙</span> Settings</button>
@@ -159,9 +159,27 @@
       <article class="panel admin-feed"><div class="panel-head"><div><small>RECENT</small><h2>Published items</h2></div></div><div id="adminPublishedList" class="history-list"></div></article>
     </section>
 
-    <section class="view" data-page="more">
-      <div class="page-head"><div><small>YPT STUDY BY RATHOD</small><h1>Help, legal & contact</h1><p>App information, support और policies एक जगह।</p></div></div>
-      <div class="more-grid"><article class="panel contact-card"><div class="app-logo-large"><img src="icons/ypt-logo.svg" alt="YPT Study by Rathod logo"></div><h2>YPT Study by Rathod</h2><p>A premium focus, live study and insights app.</p><a class="contact-link" href="https://t.me/Ashish_Thakur1" target="_blank">✈ Contact Ashish Thakur</a><a class="contact-link" href="https://t.me/YPTSTUDY1" target="_blank">♧ Join Telegram group</a><a class="contact-link apk-download" href="https://github.com/teachnlogy7509-pixel/RATHOD-HUB-2.0/releases/download/app-latest/app-debug.apk" target="_blank">⬇ Download Android APK</a></article><article class="panel"><small>HELP CENTER</small><h2>Frequently asked questions</h2><div class="faq-list"><details><summary>Timer data कब save होता है?</summary><p>Finish दबाने पर subject, date और duration Supabase में save होते हैं।</p></details><details><summary>Live student कब दिखता है?</summary><p>Logged-in user timer start करता है तो heartbeat के साथ live room में दिखाई देता है।</p></details><details><summary>VIP coupon कैसे redeem करें?</summary><p>Gold VIP Pass में active code डालें। Coupon database से server-side validate होता है।</p></details><details><summary>Password भूल जाएँ तो?</summary><p>Login screen पर Forgot password से recovery email पर reset link भेजें।</p></details></div></article><article class="panel legal-card"><small>LEGAL</small><h2>Policies</h2><button data-legal="terms">Terms & Conditions</button><button data-legal="privacy">Privacy Policy</button><button data-legal="community">Community Guidelines</button></article></div>
+    <section class="view help-view" data-page="more">
+      <div class="page-head help-head"><div><small>HELP CENTER</small><h1>Help & Support</h1><p>FAQ, privacy, terms, contact और Telegram group—सब एक ही जगह।</p></div><span class="help-shield">✓ SAFE & SECURE</span></div>
+      <div class="help-action-grid">
+        <button class="help-action" data-help-scroll="faq"><span>?</span><div><b>FAQ</b><small>Common questions के जवाब</small></div><i>›</i></button>
+        <button class="help-action" data-legal="privacy"><span>🔒</span><div><b>Privacy Policy</b><small>आपका data कैसे सुरक्षित है</small></div><i>›</i></button>
+        <button class="help-action" data-legal="terms"><span>✓</span><div><b>Terms & Conditions</b><small>App इस्तेमाल करने के नियम</small></div><i>›</i></button>
+        <button class="help-action" data-legal="community"><span>♧</span><div><b>Community Rules</b><small>Safe study community guidelines</small></div><i>›</i></button>
+        <a class="help-action" href="https://t.me/Ashish_Thakur1" target="_blank" rel="noopener"><span>✈</span><div><b>Contact Us</b><small>@Ashish_Thakur1 on Telegram</small></div><i>›</i></a>
+        <a class="help-action" href="https://t.me/YPTSTUDY1" target="_blank" rel="noopener"><span>👥</span><div><b>Join Group</b><small>YPTSTUDY1 Telegram community</small></div><i>›</i></a>
+      </div>
+      <div class="help-content-grid">
+        <article class="panel help-faq" id="helpFaq"><div class="panel-head"><div><small>QUICK HELP</small><h2>Frequently asked questions</h2></div><span class="help-count">5</span></div><div class="faq-list">
+          <details open><summary>Timer और study time कब save होता है?</summary><p>Timer Finish दबाते ही subject, तारीख और duration save होता है। Offline होने पर data device में सुरक्षित रहता है और internet आते ही sync होता है।</p></details>
+          <details><summary>Live room में मेरा नाम कब दिखेगा?</summary><p>Login करके timer start करते ही आपका नाम live learners में दिखाई देगा। Timer finish करने पर live status हट जाएगा।</p></details>
+          <details><summary>Premium या VIP coupon कैसे redeem करें?</summary><p>Gold VIP Pass खोलें, active coupon code बिल्कुल सही लिखें और Redeem दबाएँ। Invalid दिखे तो admin से active code लें।</p></details>
+          <details><summary>Password भूलने पर क्या करें?</summary><p>Login screen में Forgot password चुनें। अपना name, recovery email और नया password डालकर account recover करें।</p></details>
+          <details><summary>Admin या technical help कैसे मिलेगी?</summary><p>नीचे Contact Us से @Ashish_Thakur1 को Telegram message करें या official YPTSTUDY1 group join करें।</p></details>
+        </div></article>
+        <article class="panel help-contact"><div class="app-logo-large"><img src="icons/ypt-logo.svg" alt="YPT Study by Rathod logo"></div><small>OFFICIAL SUPPORT</small><h2>YPT Study by Rathod</h2><p>Premium focus, live study, insights और community support.</p><a class="contact-link telegram" href="https://t.me/Ashish_Thakur1" target="_blank" rel="noopener">✈ Contact Admin</a><a class="contact-link group" href="https://t.me/YPTSTUDY1" target="_blank" rel="noopener">👥 Join Official Group</a><a class="contact-link apk-download" href="https://github.com/teachnlogy7509-pixel/RATHOD-HUB-2.0/releases/download/app-latest/app-debug.apk" target="_blank" rel="noopener">⬇ Download Latest APK</a></article>
+      </div>
+      <p class="help-footer">© YPT Study by Rathod · Support: @Ashish_Thakur1</p>
     </section>
 
     <section class="view" data-page="premium">
@@ -184,6 +202,7 @@
   <button data-view="live" data-requires="vip"><span>◉</span><small>Live</small></button>
   <button data-view="insights"><span>◫</span><small>Insights</small></button>
 </nav>
+<button class="floating-help" data-view="more" aria-label="Open Help and Support">?</button>
 
 <div class="toast" id="toast"></div>
 <dialog id="authDialog"><button class="dialog-x" data-close>×</button><div class="dialog-brand">R</div><small>SYNC YOUR PROGRESS</small><h2>Login to YPT Study by Rathod</h2><p>अपने नाम और password से login करें। आपका study data सभी devices पर sync होगा।</p><form id="authForm"><label class="field">Name / Username<input id="authName" required minlength="3" maxlength="40" autocomplete="username" placeholder="e.g. Ashish Rathod"></label><label class="field recovery-field hidden">Recovery email<input id="authRecoveryEmail" type="email" autocomplete="email" placeholder="For forgot password"></label><label class="field">Password<input id="authPassword" type="password" minlength="6" required autocomplete="current-password" placeholder="Minimum 6 characters"></label><p class="form-status" id="authStatus"></p><button class="primary wide" type="submit">Login</button></form><button class="text-btn" id="authToggle">New user? Create account with name</button><button class="text-btn" id="forgotPasswordBtn">Forgot password?</button></dialog>
@@ -203,5 +222,5 @@
 
 <script src="vendor/supabase.min.js"></script>
 <script src="ypt.js" type="module"></script>
-</body>
+<script src="rathod-compat.js" defer></script><script src="rathod-live-sync.js" defer></script><script src="gyaan-auth-fix.js" defer></script></body>
 </html>
