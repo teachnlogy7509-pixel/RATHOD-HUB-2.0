@@ -1,34 +1,52 @@
 # RATHOD Focus 2.0
 
-A responsive, local-first YPT-style study system for RATHOD HUB.
+A responsive, local-first YPT-style study app with real Supabase data and secure Premium/VIP access.
 
 ## Included
 
 - Stopwatch and Pomodoro focus timer
 - Subjects, daily goals, recent sessions and streaks
-- Realtime study-room presence after Supabase connection
+- Real Supabase Auth and per-user sync
+- Real-time VIP study-room presence (no demo users)
 - Daily/weekly/monthly analytics and study calendar
 - Daily tasks and subject breakdown
-- Study groups and weekly leaderboard foundation
-- Supabase Auth, Realtime and RLS-ready SQL
+- Real Premium study groups
+- Real VIP weekly leaderboard
+- Secure Premium/VIP memberships, expiry and coupon redemption RPC
 - Mobile and desktop layouts
-- Local mode: timer, tasks, goals and analytics work before database setup
-- Existing GyaanSetu community preserved at `community.html`
+- Local mode for timer/tasks before login
+- Previous community app preserved at `community.html`
 
-## Connect Supabase later
+## Supabase setup required
 
-1. Run `supabase/ypt_full_schema.sql` in the Supabase SQL editor.
-2. Open the app → **Settings**.
-3. Paste the project URL and **publishable/anon key**.
-4. Never paste a service-role key in browser code.
-5. Create an account from the profile button and verify email if confirmation is enabled.
+The frontend is configured for `https://oeacgchzyilgqzaqxssh.supabase.co` with its publishable browser key.
 
-## Files
+1. Open that project's Supabase SQL Editor.
+2. Run the complete `supabase/ypt_full_schema.sql` file once.
+3. In Authentication settings, configure your Site URL and redirect URLs.
+4. Open the app and create/login to an account.
+
+Never put a service-role key in frontend code or GitHub.
+
+## Plans
+
+- **Free:** timer, daily goals/tasks, calendar and local progress.
+- **Premium:** advanced analytics and real study groups.
+- **VIP:** Premium features plus realtime live room and weekly leaderboard.
+
+Create coupon codes privately in Supabase SQL Editor, never in GitHub:
+
+```sql
+insert into public.ypt_access_coupons(code, plan, duration_days, max_uses)
+values ('YOUR-PRIVATE-CODE', 'premium', 30, 1);
+```
+
+Use `vip` instead of `premium` for VIP access. Users redeem codes from the Premium & VIP screen; code validation runs server-side through `redeem_ypt_access`.
+
+## Main files
 
 - `index.html` — RATHOD Focus app
 - `ypt.css` — responsive UI
-- `ypt.js` — local-first timer and Supabase sync
-- `supabase/ypt_full_schema.sql` — YPT tables, RLS, realtime and leaderboard view
-- `community.html` — previous GyaanSetu/YPT page preserved unchanged
-
-The app deliberately uses an original RATHOD Focus design rather than copying YPT branding or assets.
+- `ypt.js` — timer, real data sync and plan gates
+- `supabase/ypt_full_schema.sql` — tables, RLS, realtime, memberships and RPCs
+- `community.html` — previous community page preserved unchanged

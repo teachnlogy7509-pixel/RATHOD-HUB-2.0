@@ -16,7 +16,7 @@
     <nav class="top-actions">
       <button class="icon-btn" data-open="search">⌕</button>
       <button class="icon-btn" data-open="notifications">♢</button>
-      <button class="profile-btn" id="profileBtn"><span class="avatar" id="topAvatar">R</span><span id="topName">Guest</span></button>
+      <span class="plan-badge" id="planBadge">FREE</span><button class="profile-btn" id="profileBtn"><span class="avatar" id="topAvatar">R</span><span id="topName">Guest</span></button>
     </nav>
   </header>
 
@@ -28,11 +28,12 @@
     <nav class="side-nav">
       <button class="active" data-view="dashboard"><span>⌂</span> Dashboard</button>
       <button data-view="timer"><span>◴</span> Focus timer</button>
-      <button data-view="live"><span>◉</span> Live room <em id="sideLive">0</em></button>
-      <button data-view="analytics"><span>▥</span> Analytics</button>
+      <button data-view="live" data-requires="vip"><span>◉</span> Live room <em id="sideLive">0</em></button>
+      <button data-view="analytics" data-requires="premium"><span>▥</span> Analytics</button>
       <button data-view="calendar"><span>▦</span> Calendar</button>
-      <button data-view="groups"><span>♧</span> Study groups</button>
-      <button data-view="leaderboard"><span>♛</span> Leaderboard</button>
+      <button data-view="groups" data-requires="premium"><span>♧</span> Study groups</button>
+      <button data-view="leaderboard" data-requires="vip"><span>♛</span> Leaderboard</button>
+      <button data-view="premium" class="premium-nav"><span>✦</span> Premium & VIP</button>
       <a href="community.html"><span>☏</span> Community</a>
     </nav>
     <div class="side-bottom">
@@ -44,6 +45,7 @@
   <main class="main">
     <section class="view active" data-page="dashboard">
       <div class="page-head"><div><small id="todayLabel"></small><h1>Ready to focus?</h1><p>आज की consistency ही कल का result बनेगी।</p></div><button class="primary" data-view="timer">Start studying <span>→</span></button></div>
+      <article class="membership-strip" id="membershipStrip"><div><span id="membershipIcon">◇</span><div><small>YOUR ACCESS</small><b id="membershipTitle">Free plan</b><p id="membershipSubtitle">Login and redeem a code to unlock Premium or VIP.</p></div></div><button class="primary" data-view="premium">View access</button></article>
       <div class="stats-grid">
         <article class="stat accent"><span>Today</span><strong id="todayTime">0m</strong><small id="todayDelta">Start your first session</small></article>
         <article class="stat"><span>This week</span><strong id="weekTime">0h 0m</strong><small id="weekSessions">0 sessions</small></article>
@@ -117,6 +119,18 @@
       <div class="page-head"><div><small>WEEKLY LEADERBOARD</small><h1>Focus, not competition</h1><p>Rank मेहनत दिखाता है—comparison नहीं।</p></div><div class="segmented"><button class="active">Weekly</button><button>Monthly</button></div></div>
       <div class="podium" id="podium"></div><article class="panel rank-table"><div class="rank-row rank-head"><span>Rank</span><span>Learner</span><span>Streak</span><span>Focus</span></div><div id="rankRows"></div></article>
     </section>
+
+    <section class="view" data-page="premium">
+      <div class="page-head"><div><small>RATHOD ACCESS</small><h1>Premium & VIP</h1><p>अपने account पर secure coupon से access activate करें।</p></div><span class="plan-badge large" id="premiumCurrentBadge">FREE</span></div>
+      <article class="access-status panel"><div class="access-orb" id="accessOrb">◇</div><div><small>CURRENT PLAN</small><h2 id="accessPlanName">Free</h2><p id="accessExpiry">No active paid access</p></div><button class="secondary" id="refreshAccess">Refresh status</button></article>
+      <div class="plan-grid">
+        <article class="plan-card"><small>START</small><h2>Free</h2><b>₹0</b><ul><li>Focus stopwatch & Pomodoro</li><li>Daily goal and tasks</li><li>Study calendar</li><li>Local-first progress</li></ul><span class="current-plan" data-plan-label="free">Current</span></article>
+        <article class="plan-card premium"><small>MOST USEFUL</small><h2>Premium</h2><b>Code access</b><ul><li>Everything in Free</li><li>Advanced analytics</li><li>Subject breakdown</li><li>Create and join study groups</li></ul><span class="current-plan" data-plan-label="premium">Locked</span></article>
+        <article class="plan-card vip"><small>FULL ACCESS</small><h2>VIP</h2><b>Code access</b><ul><li>Everything in Premium</li><li>Realtime live study room</li><li>Weekly leaderboard</li><li>VIP identity badge</li></ul><span class="current-plan" data-plan-label="vip">Locked</span></article>
+      </div>
+      <article class="panel redeem-card"><div><small>HAVE AN ACCESS CODE?</small><h2>Redeem Premium or VIP</h2><p>Code आपके account से जुड़ जाएगा। Expiry database से control होगी।</p></div><form id="redeemForm"><input id="couponInput" required maxlength="50" autocomplete="off" placeholder="Enter coupon code"><button class="primary">Redeem</button></form><p id="redeemStatus" class="form-status"></p></article>
+      <article class="panel secure-note"><b>🔒 Secure access</b><p>Coupon validation Supabase RPC में server-side होती है। Browser में valid coupon list या service-role key उपलब्ध नहीं रहती।</p></article>
+    </section>
   </main>
 </div>
 
@@ -127,5 +141,5 @@
 <dialog id="todoDialog"><button class="dialog-x" data-close>×</button><small>DAILY PLAN</small><h2>Add a task</h2><form id="todoForm"><label class="field">Task<input id="todoInput" maxlength="100" required placeholder="e.g. Biology NCERT chapter 3"></label><label class="field">Subject<select id="todoSubject"></select></label><button class="primary wide">Add task</button></form></dialog>
 <dialog id="groupDialog"><button class="dialog-x" data-close>×</button><small>NEW STUDY GROUP</small><h2>Create your focus circle</h2><form id="groupForm"><label class="field">Group name<input id="groupName" required maxlength="50"></label><label class="field">Weekly goal (hours)<input id="groupGoal" type="number" min="1" max="200" value="35"></label><label class="field">Privacy<select id="groupPrivacy"><option value="public">Public</option><option value="private">Private</option></select></label><button class="primary wide">Create group</button></form></dialog>
 <script src="ypt.js" type="module"></script>
-<script src="rathod-compat.js" defer></script></body>
+</body>
 </html>

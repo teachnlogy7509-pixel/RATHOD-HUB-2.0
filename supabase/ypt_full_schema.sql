@@ -94,3 +94,143 @@ group by user_id;
 do $$ begin
   alter publication supabase_realtime add table public.ypt_live_sessions;
 exception when duplicate_object then null; end $$;
+
+
+-- Real user identities used by live rooms, groups and leaderboard
+create table if not exists public.ypt_profiles (
+  id uuid primary key references auth.users(id) on delete cascade,
+  display_name text not null default 'Learner',
+  avatar_url text,
+  created_at timestamptz not null default now(),
+  updated_at timestamptz not null default now()
+);
+alter table public.ypt_profiles enable row level security;
+drop policy if exists "authenticated view ypt profiles" on public.ypt_profiles;
+create policy "authenticated view ypt profiles" on public.ypt_profiles for select to authenticated using(true);
+drop policy if exists "users create ypt profile" on public.ypt_profiles;
+create policy "users create ypt profile" on public.ypt_profiles for insert to authenticated with check(auth.uid()=id);
+drop policy if exists "users update ypt profile" on public.ypt_profiles;
+create policy "users update ypt profile" on public.ypt_profiles for update to authenticated using(auth.uid()=id) with check(auth.uid()=id);
+
+create or replace function public.create_ypt_profile() returns trigger
+language plpgsql security definer set search_path=public as $$
+begin
+  insert into public.ypt_profiles(id,display_name)
+  values(new.id,coalesce(nullif(new.raw_user_meta_data->>'full_name',''),split_part(coalesce(new.email,'Learner'),'@',1)))
+  on conflict(id) do nothing;
+  return new;
+end; $$;
+drop trigger if exists on_auth_user_create_ypt_profile on auth.users;
+create trigger on_auth_user_create_ypt_profile after insert on auth.users
+for each row execute function public.create_ypt_profile();
+
+-- Premium/VIP access. Coupon codes are never selectable from the browser.
+create table if not exists public.ypt_memberships (
+  user_id uuid primary key references auth.users(id) on delete cascade,
+  plan text not null default 'free' check(plan in ('free','premium','vip')),
+  active boolean not null default true,
+  starts_at timestamptz not null default now(),
+  expires_at timestamptz,
+  source text not null default 'admin',
+  updated_at timestamptz not null default now()
+);
+alter table public.ypt_memberships enable row level security;
+drop policy if exists "users view own ypt membership" on public.ypt_memberships;
+create policy "users view own ypt membership" on public.ypt_memberships for select to authenticated using(auth.uid()=user_id);
+
+create table if not exists public.ypt_access_coupons (
+  id uuid primary key default gen_random_uuid(),
+  code text unique not null,
+  plan text not null check(plan in ('premium','vip')),
+  duration_days integer not null check(duration_days between 1 and 3650),
+  max_uses integer check(max_uses is null or max_uses>0),
+  used_count integer not null default 0 check(used_count>=0),
+  active boolean not null default true,
+  expires_at timestamptz,
+  created_at timestamptz not null default now()
+);
+alter table public.ypt_access_coupons enable row level security;
+-- Intentionally no browser SELECT policy: codes are validated only inside the RPC.
+
+create table if not exists public.ypt_coupon_redemptions (
+  id uuid primary key default gen_random_uuid(),
+  coupon_id uuid not null references public.ypt_access_coupons(id) on delete restrict,
+  user_id uuid not null references auth.users(id) on delete cascade,
+  redeemed_at timestamptz not null default now(),
+  unique(coupon_id,user_id)
+);
+alter table public.ypt_coupon_redemptions enable row level security;
+drop policy if exists "users view own ypt redemptions" on public.ypt_coupon_redemptions;
+create policy "users view own ypt redemptions" on public.ypt_coupon_redemptions for select to authenticated using(auth.uid()=user_id);
+
+create or replace function public.redeem_ypt_access(p_code text)
+returns jsonb language plpgsql security definer set search_path=public as $$
+declare c public.ypt_access_coupons%rowtype; new_expiry timestamptz; existing_expiry timestamptz;
+begin
+  if auth.uid() is null then return jsonb_build_object('success',false,'error','Login required'); end if;
+  select * into c from public.ypt_access_coupons
+  where upper(code)=upper(trim(p_code)) and active=true
+    and (expires_at is null or expires_at>now())
+  for update;
+  if c.id is null then return jsonb_build_object('success',false,'error','Code invalid or expired'); end if;
+  if c.max_uses is not null and c.used_count>=c.max_uses then return jsonb_build_object('success',false,'error','Code usage limit reached'); end if;
+  if exists(select 1 from public.ypt_coupon_redemptions where coupon_id=c.id and user_id=auth.uid()) then
+    return jsonb_build_object('success',false,'error','You already redeemed this code');
+  end if;
+  select expires_at into existing_expiry from public.ypt_memberships where user_id=auth.uid();
+  new_expiry:=greatest(coalesce(existing_expiry,now()),now())+make_interval(days=>c.duration_days);
+  insert into public.ypt_memberships(user_id,plan,active,starts_at,expires_at,source,updated_at)
+  values(auth.uid(),c.plan,true,now(),new_expiry,'coupon',now())
+  on conflict(user_id) do update set plan=excluded.plan,active=true,expires_at=new_expiry,source='coupon',updated_at=now();
+  insert into public.ypt_coupon_redemptions(coupon_id,user_id) values(c.id,auth.uid());
+  update public.ypt_access_coupons set used_count=used_count+1 where id=c.id;
+  return jsonb_build_object('success',true,'plan',c.plan,'expires_at',new_expiry);
+end; $$;
+revoke all on function public.redeem_ypt_access(text) from public,anon;
+grant execute on function public.redeem_ypt_access(text) to authenticated;
+
+-- Real weekly leaderboard with real profile names. Security invoker keeps source RLS active.
+drop view if exists public.ypt_weekly_leaderboard;
+create view public.ypt_weekly_leaderboard with (security_invoker=true) as
+select s.user_id,coalesce(p.display_name,'Learner') as display_name,
+       sum(s.duration_seconds)::bigint as focus_seconds,count(*)::bigint as sessions,0::integer as streak
+from public.ypt_focus_sessions s
+left join public.ypt_profiles p on p.id=s.user_id
+where s.session_date>=date_trunc('week',current_date)::date
+group by s.user_id,p.display_name;
+
+-- Server-side plan check used by protected Premium/VIP policies.
+create or replace function public.ypt_has_access(required_plan text)
+returns boolean language sql stable security definer set search_path=public as $$
+  select exists(
+    select 1 from public.ypt_memberships m
+    where m.user_id=auth.uid() and m.active=true
+      and (m.expires_at is null or m.expires_at>now())
+      and case required_plan when 'vip' then m.plan='vip' when 'premium' then m.plan in ('premium','vip') else true end
+  );
+$$;
+revoke all on function public.ypt_has_access(text) from public,anon;
+grant execute on function public.ypt_has_access(text) to authenticated;
+
+drop policy if exists "authenticated view ypt live" on public.ypt_live_sessions;
+create policy "vip view ypt live" on public.ypt_live_sessions for select to authenticated using(public.ypt_has_access('vip'));
+drop policy if exists "ypt own live insert" on public.ypt_live_sessions;
+create policy "vip own live insert" on public.ypt_live_sessions for insert to authenticated with check(auth.uid()=user_id and public.ypt_has_access('vip'));
+drop policy if exists "ypt own live update" on public.ypt_live_sessions;
+create policy "vip own live update" on public.ypt_live_sessions for update to authenticated using(auth.uid()=user_id and public.ypt_has_access('vip')) with check(auth.uid()=user_id and public.ypt_has_access('vip'));
+
+drop policy if exists "view public or joined ypt groups" on public.ypt_study_groups;
+create policy "premium view ypt groups" on public.ypt_study_groups for select to authenticated using(public.ypt_has_access('premium') and (privacy='public' or owner_id=auth.uid() or public.ypt_is_group_member(id)));
+drop policy if exists "create ypt groups" on public.ypt_study_groups;
+create policy "premium create ypt groups" on public.ypt_study_groups for insert to authenticated with check(owner_id=auth.uid() and public.ypt_has_access('premium'));
+
+create or replace function public.get_ypt_weekly_leaderboard()
+returns table(user_id uuid,display_name text,focus_seconds bigint,sessions bigint,streak integer)
+language sql stable security definer set search_path=public as $$
+  select s.user_id,coalesce(p.display_name,'Learner'),sum(s.duration_seconds)::bigint,count(*)::bigint,0::integer
+  from public.ypt_focus_sessions s left join public.ypt_profiles p on p.id=s.user_id
+  where s.session_date>=date_trunc('week',current_date)::date and public.ypt_has_access('vip')
+  group by s.user_id,p.display_name order by sum(s.duration_seconds) desc limit 100;
+$$;
+revoke all on function public.get_ypt_weekly_leaderboard() from public,anon;
+grant execute on function public.get_ypt_weekly_leaderboard() to authenticated;
