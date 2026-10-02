@@ -31,6 +31,7 @@
       <button data-view="live" data-requires="vip"><span>◉</span> Live room <em id="sideLive">0</em></button>
       <button data-view="analytics" data-requires="premium"><span>▥</span> Analytics</button>
       <button data-view="calendar"><span>▦</span> Calendar</button>
+      <button data-view="history"><span>✓</span> Daily history</button>
       <button data-view="groups" data-requires="premium"><span>♧</span> Study groups</button>
       <button data-view="leaderboard" data-requires="vip"><span>♛</span> Leaderboard</button>
       <button data-view="premium" class="premium-nav"><span>✦</span> Gold VIP Pass</button>
@@ -109,6 +110,13 @@
       <article class="panel calendar-panel"><div class="calendar-head"><button id="prevMonth">‹</button><h2 id="calendarMonth"></h2><button id="nextMonth">›</button></div><div class="calendar-week"><span>Sun</span><span>Mon</span><span>Tue</span><span>Wed</span><span>Thu</span><span>Fri</span><span>Sat</span></div><div class="calendar-grid" id="calendarGrid"></div></article>
     </section>
 
+
+    <section class="view" data-page="history">
+      <div class="page-head"><div><small>DATE-WISE STUDY RECORD</small><h1>Daily history</h1><p>हर तारीख का पढ़ाई का समय, पूरे और अधूरे tasks एक जगह।</p></div><input id="historyDate" type="date"></div>
+      <div class="stats-grid history-stats"><article class="stat accent"><span>Focus time</span><strong id="historyTime">0m</strong><small>selected date</small></article><article class="stat"><span>Completed</span><strong id="historyDone">0</strong><small>tasks finished</small></article><article class="stat"><span>Pending</span><strong id="historyPending">0</strong><small>tasks remaining</small></article><article class="stat"><span>Sessions</span><strong id="historySessionsCount">0</strong><small>saved focus sessions</small></article></div>
+      <div class="history-grid"><article class="panel"><div class="panel-head"><div><small>WORK LOG</small><h2>Tasks: done & not done</h2></div></div><div id="historyTasks" class="history-list"></div></article><article class="panel"><div class="panel-head"><div><small>FOCUS LOG</small><h2>Subject sessions</h2></div></div><div id="historySessions" class="history-list"></div></article></div>
+    </section>
+
     <section class="view" data-page="groups">
       <div class="page-head"><div><small>STUDY GROUPS</small><h1>Small teams, stronger focus</h1><p>Private या public group में weekly target पूरा करें।</p></div><button class="primary" id="createGroupBtn">＋ Create group</button></div>
       <div class="group-grid" id="groupGrid"></div>
@@ -136,7 +144,7 @@
   <button data-view="dashboard"><span>⌂</span><small>Home</small></button>
   <button data-view="timer"><span>◴</span><small>Timer</small></button>
   <button data-view="live" data-requires="vip"><span>◉</span><small>Live</small></button>
-  <button data-view="leaderboard" data-requires="vip"><span>♛</span><small>Rank</small></button>
+  <button data-view="history"><span>✓</span><small>History</small></button>
   <button data-view="premium"><span>✦</span><small>VIP</small></button>
 </nav>
 
@@ -146,6 +154,7 @@
 <dialog id="goalDialog"><button class="dialog-x" data-close>×</button><small>DAILY TARGET</small><h2>Set your focus goal</h2><form id="goalForm"><label class="field">Hours per day<input id="goalHours" type="number" min="1" max="18" step="0.5" value="6"></label><button class="primary wide">Save goal</button></form></dialog>
 <dialog id="todoDialog"><button class="dialog-x" data-close>×</button><small>DAILY PLAN</small><h2>Add a task</h2><form id="todoForm"><label class="field">Task<input id="todoInput" maxlength="100" required placeholder="e.g. Biology NCERT chapter 3"></label><label class="field">Subject<select id="todoSubject"></select></label><button class="primary wide">Add task</button></form></dialog>
 <dialog id="groupDialog"><button class="dialog-x" data-close>×</button><small>NEW STUDY GROUP</small><h2>Create your focus circle</h2><form id="groupForm"><label class="field">Group name<input id="groupName" required maxlength="50"></label><label class="field">Weekly goal (hours)<input id="groupGoal" type="number" min="1" max="200" value="35"></label><label class="field">Privacy<select id="groupPrivacy"><option value="public">Public</option><option value="private">Private</option></select></label><button class="primary wide">Create group</button></form></dialog>
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
 <script src="ypt.js" type="module"></script>
-<script src="rathod-compat.js" defer></script></body>
+</body>
 </html>

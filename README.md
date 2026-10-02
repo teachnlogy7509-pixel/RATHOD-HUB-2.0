@@ -10,6 +10,8 @@ A black, gold and red premium YPT-style study app with real Supabase data and se
 - Real-time VIP study-room presence (no demo users)
 - Daily/weekly/monthly analytics and study calendar
 - Daily tasks and subject breakdown
+- Date-wise Daily History with completed/pending tasks and subject sessions
+- Real authenticated learners shown in live presence
 - Real Premium study groups
 - Real VIP weekly leaderboard
 - Secure Premium/VIP memberships, expiry and coupon redemption RPC

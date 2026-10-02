@@ -234,3 +234,11 @@ language sql stable security definer set search_path=public as $$
 $$;
 revoke all on function public.get_ypt_weekly_leaderboard() from public,anon;
 grant execute on function public.get_ypt_weekly_leaderboard() to authenticated;
+
+-- Dashboard live-presence fix: all authenticated real learners can appear live.
+drop policy if exists "vip view ypt live" on public.ypt_live_sessions;
+create policy "authenticated view ypt live" on public.ypt_live_sessions for select to authenticated using(true);
+drop policy if exists "vip own live insert" on public.ypt_live_sessions;
+create policy "authenticated own live insert" on public.ypt_live_sessions for insert to authenticated with check(auth.uid()=user_id);
+drop policy if exists "vip own live update" on public.ypt_live_sessions;
+create policy "authenticated own live update" on public.ypt_live_sessions for update to authenticated using(auth.uid()=user_id) with check(auth.uid()=user_id);
