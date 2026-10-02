@@ -77,3 +77,9 @@ Run `supabase/ypt_app_features.sql`, then edit and run `supabase/ypt_make_admin.
 The Android APK bundles the complete HTML/CSS/JS app and Supabase library inside the APK, so the timer, subjects, tasks, calendar, history and local analytics start without internet. Running timers persist timestamps in local storage and recover after backgrounding/restart; unsynced completed sessions queue locally and sync after login when internet returns.
 
 The optional Accessibility Focus Shield turns on with an active timer and allows only YPT Study by Rathod and the official PW package `xyz.penpencil.physicswala`, plus essential Android system UI/settings/keyboard. The user must explicitly enable the service in Android Accessibility settings. Finish the timer to switch the shield off.
+
+## Account edits and recovery
+
+Logged-in users can open the profile button, enter their exact recovery email, and immediately change their username and/or password without OTP. Logged-out recovery accepts the exact username + recovery email + a new password; it is rate-limited to five failed attempts per hour. Run `supabase/ypt_app_features.sql` after this update.
+
+Live seats use a three-column mobile grid with real names. Each seat provides separate Message and Insights actions; private messages are protected by sender/receiver RLS.
