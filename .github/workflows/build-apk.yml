@@ -11,6 +11,15 @@ jobs:
         with: {distribution: temurin, java-version: '17'}
       - uses: gradle/actions/setup-gradle@v4
         with: {gradle-version: '8.10.2'}
+      - name: Add offline Hindi and emoji font pack
+        shell: bash
+        run: |
+          sudo apt-get update -qq
+          sudo apt-get install -y -qq fonts-noto-color-emoji fonts-noto-core fonts-noto-ui-core
+          mkdir -p android-app/app/src/main/assets/fonts
+          cp "$(find /usr/share/fonts -iname 'NotoColorEmoji.ttf' | head -1)" android-app/app/src/main/assets/fonts/NotoColorEmoji.ttf
+          cp "$(find /usr/share/fonts -iname 'NotoSansDevanagari-Regular.ttf' | head -1)" android-app/app/src/main/assets/fonts/DroidSansDevanagari-Regular.ttf
+          cp "$(find /usr/share/fonts -iname 'NotoSans-Italic*.ttf' | head -1)" android-app/app/src/main/assets/fonts/NotoSans-Italic.ttf
       - run: gradle -p android-app :app:assembleDebug
       - uses: actions/upload-artifact@v4
         with: {name: YPT-Study-by-Rathod-APK, path: android-app/app/build/outputs/apk/debug/app-debug.apk}
