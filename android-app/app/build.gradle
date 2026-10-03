@@ -2,5 +2,5 @@ plugins { id 'com.android.application' }
 
 android { namespace 'com.rathod.yptstudy'; compileSdk 35
   compileOptions { sourceCompatibility JavaVersion.VERSION_17; targetCompatibility JavaVersion.VERSION_17 }
-  defaultConfig { applicationId 'com.rathod.yptstudy.ultimate'; minSdk 23; targetSdk 35; versionCode 3; versionName '3.0.0' }
+  defaultConfig { applicationId 'com.rathod.yptstudy.vipzone'; minSdk 23; targetSdk 35; versionCode 4; versionName '4.0.0' }
 }
