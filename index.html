@@ -50,6 +50,7 @@
     <nav class="side-nav">
       <button class="active" data-view="dashboard"><span>⌂</span> Dashboard</button>
       <button data-view="timer"><span>◴</span> Focus timer</button>
+      <button data-view="planner"><span>▤</span> Auto Study Planner</button>
       <button data-view="live" data-requires="vip"><span>◉</span> Live room <em id="sideLive">0</em></button>
       <button data-view="insights"><span>◫</span> Student insights</button>
       <button data-view="analytics" data-requires="premium"><span>▥</span> Analytics</button>
@@ -123,6 +124,17 @@
           <article class="panel"><small>FOCUS RULES</small><ul><li>Phone silent रखें</li><li>एक समय में एक subject</li><li>Session तभी finish करें जब रुकें</li></ul></article>
           <article class="panel"><small>RECENT SESSIONS</small><div id="recentSessions" class="recent-list"></div></article>
         </aside>
+      </div>
+    </section>
+
+
+    <section class="view planner-view" data-page="planner">
+      <div class="page-head planner-head"><div><small>YPT AUTO PLANNER</small><h1>10-Minute Study Planner</h1><p>Timer से पढ़ा हुआ हर subject अपने-आप coloured timeline में भरता है।</p></div><div class="planner-date-controls"><button id="plannerPrevDay" aria-label="Previous day">‹</button><input id="plannerDate" type="date"><button id="plannerNextDay" aria-label="Next day">›</button><button id="plannerToday">Today</button></div></div>
+      <div class="stats-grid planner-stats"><article class="stat accent"><span>Total focus</span><strong id="plannerTotal">0m</strong><small id="plannerDayLabel">Selected day</small></article><article class="stat"><span>Sessions</span><strong id="plannerSessionCount">0</strong><small>auto-filled blocks</small></article><article class="stat"><span>Tasks done</span><strong id="plannerTasksDone">0</strong><small id="plannerTasksAll">0 total tasks</small></article><article class="stat"><span>Top subject</span><strong id="plannerTopSubject">—</strong><small>most focused</small></article></div>
+      <div class="planner-tabs"><button class="active" data-view="planner">Day</button><button data-view="analytics" data-requires="premium">Week</button><button data-view="calendar">Month</button></div>
+      <div class="planner-layout">
+        <article class="panel planner-timeline-card"><div class="panel-head"><div><small>AUTO-FILLED TIMELINE</small><h2 id="plannerTimelineTitle">Study day</h2></div><span class="planner-live-note">10 MIN GRID</span></div><div class="planner-timeline-wrap"><div id="plannerTimeline" class="planner-timeline"></div></div></article>
+        <aside class="planner-side"><article class="panel"><small>SUBJECT TOTALS</small><div id="plannerSubjectSummary" class="planner-subject-summary"></div></article><article class="panel"><div class="panel-head"><div><small>DAILY TODOS</small><h2>Tasks</h2></div><button class="round" id="plannerAddTodo">＋</button></div><div id="plannerTaskList" class="planner-task-list"></div></article><article class="planner-tip"><b>⚡ Auto-fill</b><p>Focus timer finish करते ही यह planner अपने-आप update होगा। कोई manual entry जरूरी नहीं।</p></article></aside>
       </div>
     </section>
 
@@ -226,7 +238,7 @@
 </div>
 <nav class="mobile-dock">
   <button data-view="dashboard"><span>⌂</span><small>Home</small></button>
-  <button data-view="history"><span>✓</span><small>Planner</small></button>
+  <button data-view="planner"><span>▤</span><small>Planner</small></button>
   <button class="mobile-center-timer" data-view="timer"><span>▶</span><small>Focus</small></button>
   <button data-view="live" data-requires="vip"><span>◉</span><small>Live</small></button>
   <button data-view="insights"><span>◫</span><small>Insights</small></button>
