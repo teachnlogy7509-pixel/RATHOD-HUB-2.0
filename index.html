@@ -25,7 +25,7 @@
   <script type="application/ld+json">{"@context":"https://schema.org","@graph":[{"@type":"WebSite","@id":"https://teachnlogy7509-pixel.github.io/RATHOD-HUB-2.0/#website","name":"YPT by Rathod","alternateName":["YPT Study by Rathod","YPT Rathod"],"url":"https://teachnlogy7509-pixel.github.io/RATHOD-HUB-2.0/","inLanguage":["hi","en"],"isPartOf":{"@type":"WebSite","name":"RATHOD HUB","url":"https://teachnlogy7509-pixel.github.io/RATHOD-HUB/"}},{"@type":"SoftwareApplication","name":"YPT by Rathod","alternateName":"YPT Study by Rathod","applicationCategory":"EducationalApplication","operatingSystem":"Web, Android","url":"https://teachnlogy7509-pixel.github.io/RATHOD-HUB-2.0/","downloadUrl":"https://github.com/teachnlogy7509-pixel/RATHOD-HUB-2.0/releases/download/app-latest/app-debug.apk","description":"A study focus app with stopwatch, Pomodoro, live study room, VIP community, student insights, leaderboard and study analytics.","author":{"@type":"Person","name":"Ashish Rathor"},"isPartOf":{"@type":"WebSite","name":"RATHOD HUB","url":"https://teachnlogy7509-pixel.github.io/RATHOD-HUB/"}}]}</script>
   <link rel="manifest" href="manifest.webmanifest">
   <link rel="icon" href="icons/ypt-logo.svg" type="image/svg+xml">
-  <link rel="stylesheet" href="ypt.css?v=15">
+  <link rel="stylesheet" href="ypt.css?v=16">
   <script>if("serviceWorker" in navigator){window.addEventListener("load",()=>navigator.serviceWorker.register("sw.js"))}</script>
 </head>
 <body>
@@ -51,6 +51,7 @@
       <button class="active" data-view="dashboard"><span>⌂</span> Dashboard</button>
       <button data-view="timer"><span>◴</span> Focus timer</button>
       <button data-view="planner"><span>▤</span> Auto Study Planner</button>
+      <button data-view="quality"><span>◎</span> Focus Quality</button>
       <button data-view="live" data-requires="vip"><span>◉</span> Live room <em id="sideLive">0</em></button>
       <button data-view="insights"><span>◫</span> Student insights</button>
       <button data-view="analytics" data-requires="premium"><span>▥</span> Analytics</button>
@@ -76,7 +77,7 @@
         <header class="mobile-focus-hero"><div class="mobile-hero-top"><button id="mobileHeroMenu">☰</button><b id="mobileHeroDate">Today</b><span id="mobileDday">D-0</span></div><div class="mobile-total-label">TODAY FOCUS</div><strong id="mobileTotalTime">00:00:00</strong><div class="mobile-period-tabs"><button class="active" data-view="dashboard">Day</button><button data-view="analytics" data-requires="premium">Week</button><button data-view="calendar">Month</button></div></header>
         <div class="mobile-active-session hidden" id="mobileActiveSession"><div><small>NOW STUDYING</small><b id="mobileActiveSubject">Physics</b><time id="mobileActiveTime">00:00:00</time></div><button id="mobilePauseSession">Ⅱ</button><button id="mobileFinishSession">■</button></div>
         <section class="mobile-subject-section"><div class="mobile-section-head"><div><small>SUBJECTS & TODOS</small><h2>Study and todo</h2></div><button id="mobileAddTodo">＋</button></div><div id="mobileSubjectList" class="mobile-subject-list"></div></section>
-        <div class="mobile-feature-grid"><button class="mobile-insight-banner" data-view="insights"><span>◫</span><div><b>Student Insights</b><small>Any learner · any date</small></div><i>›</i></button><button class="mobile-insight-banner community-shortcut" data-view="community" data-requires="vip"><span>♨</span><div><b>VIP Community</b><small>Post · react · reply</small></div><i>›</i></button></div>
+        <div class="mobile-feature-grid"><button class="mobile-insight-banner" data-view="insights"><span>◫</span><div><b>Student Insights</b><small>Any learner · any date</small></div><i>›</i></button><button class="mobile-insight-banner community-shortcut" data-view="community" data-requires="vip"><span>♨</span><div><b>VIP Community</b><small>Post · react · reply</small></div><i>›</i></button><button class="mobile-insight-banner quality-shortcut" data-view="quality"><span>◎</span><div><b>Focus Quality</b><small>Score · pauses · distractions</small></div><i>›</i></button></div>
       </div>
       <div class="page-head"><div><small id="todayLabel"></small><h1>YPT by Rathod — Ready to focus?</h1><p>आज की consistency ही कल का result बनेगी।</p></div><button class="primary" data-view="timer">Start studying <span>→</span></button></div>
       <article class="membership-strip" id="membershipStrip"><div><span id="membershipIcon">◇</span><div><small>YOUR ACCESS</small><b id="membershipTitle">Free plan</b><p id="membershipSubtitle">Login and redeem a code to unlock Premium or VIP.</p></div></div><button class="primary" data-view="premium">View access</button></article>
@@ -115,7 +116,7 @@
           <div class="mode-tabs"><button class="active" data-mode="stopwatch">Stopwatch</button><button data-mode="pomodoro">Pomodoro</button></div>
           <label class="field">Subject<select id="subjectSelect"></select></label>
           <div class="timer-display" id="timerDisplay">00:00:00</div>
-          <p id="timerHint">Your session is ready.</p>
+          <p id="timerHint">Your session is ready.</p><div class="live-quality-strip"><span>FOCUS QUALITY</span><b id="liveQualityScore">100</b><small id="liveQualityMeta">Clean session · no interruptions</small></div>
           <div class="timer-actions"><button class="secondary" id="timerReset">Reset</button><button class="primary big" id="timerStart">▶ Start</button><button class="danger hidden" id="timerFinish">■ Finish</button></div>
           <div class="pomodoro-config hidden" id="pomodoroConfig"><label>Focus <input id="focusMinutes" type="number" min="5" max="180" value="50"> min</label><label>Break <input id="breakMinutes" type="number" min="1" max="60" value="10"> min</label></div>
         </article>
@@ -136,6 +137,14 @@
         <article class="panel planner-timeline-card"><div class="panel-head"><div><small>AUTO-FILLED TIMELINE</small><h2 id="plannerTimelineTitle">Study day</h2></div><span class="planner-live-note">10 MIN GRID</span></div><div class="planner-timeline-wrap"><div id="plannerTimeline" class="planner-timeline"></div></div></article>
         <aside class="planner-side"><article class="panel"><small>SUBJECT TOTALS</small><div id="plannerSubjectSummary" class="planner-subject-summary"></div></article><article class="panel"><div class="panel-head"><div><small>DAILY TODOS</small><h2>Tasks</h2></div><button class="round" id="plannerAddTodo">＋</button></div><div id="plannerTaskList" class="planner-task-list"></div></article><article class="planner-tip"><b>⚡ Auto-fill</b><p>Focus timer finish करते ही यह planner अपने-आप update होगा। कोई manual entry जरूरी नहीं।</p></article></aside>
       </div>
+    </section>
+
+
+    <section class="view quality-view" data-page="quality">
+      <div class="page-head quality-head"><div><small>FOCUS QUALITY REPORT</small><h1>Time नहीं, focus की quality</h1><p>App exits, pauses और uninterrupted study से हर session का verified score बनता है।</p></div><span class="quality-verified">◎ VERIFIED LOCALLY</span></div>
+      <div class="stats-grid quality-stats"><article class="stat accent"><span>Average score</span><strong id="qualityAverage">—</strong><small>measured sessions</small></article><article class="stat"><span>Deep focus</span><strong id="qualityDeepCount">0</strong><small>score 85+</small></article><article class="stat"><span>Interruptions</span><strong id="qualityInterruptions">0</strong><small>app exits / blocked apps</small></article><article class="stat"><span>Pauses</span><strong id="qualityPauses">0</strong><small>manual timer pauses</small></article></div>
+      <div class="quality-layout"><article class="panel quality-chart-card"><div class="panel-head"><div><small>LAST 7 DAYS</small><h2>Focus quality trend</h2></div><b id="qualityWeekLabel">No measured sessions</b></div><div id="qualityChart" class="quality-chart"></div><div class="quality-legend"><span><i class="perfect"></i>90–100 Perfect</span><span><i class="deep"></i>75–89 Deep</span><span><i class="distracted"></i>Below 75</span></div></article><article class="panel"><div class="panel-head"><div><small>SESSION REPORTS</small><h2>Recent quality</h2></div></div><div id="qualitySessions" class="quality-session-list"></div></article></div>
+      <article class="quality-info"><b>How score works</b><p>Session 100 से शुरू होता है। हर app exit/blocked app और manual pause पर score घटता है। PW और YPT allowed हैं। Browser में tab change detect होता है; Android app में Focus Shield blocked attempts भी count करता है।</p></article>
     </section>
 
     <section class="view" data-page="live">
@@ -264,7 +273,7 @@
 <dialog id="legalDialog"><button class="dialog-x" data-close>×</button><small>YPT STUDY BY RATHOD</small><h2 id="legalTitle">Policy</h2><div id="legalContent" class="legal-content"></div></dialog>
 
 <script src="vendor/supabase.min.js"></script>
-<script src="ypt.js?v=15" type="module"></script>
-<script src="community.js?v=15" type="module"></script>
+<script src="ypt.js?v=16" type="module"></script>
+<script src="community.js?v=16" type="module"></script>
 <script src="rathod-compat.js" defer></script><script src="rathod-live-sync.js" defer></script><script src="gyaan-auth-fix.js" defer></script></body>
 </html>

@@ -7,6 +7,9 @@ public class MainActivity extends Activity {
   @JavascriptInterface public void setFocusShield(boolean enabled){getSharedPreferences("focus",MODE_PRIVATE).edit().putBoolean("shield",enabled).apply();}
   @JavascriptInterface public void openAccessibilitySettings(){runOnUiThread(()->startActivity(new Intent(Settings.ACTION_ACCESSIBILITY_SETTINGS)));}
   @JavascriptInterface public boolean isFocusShieldEnabled(){return getSharedPreferences("focus",MODE_PRIVATE).getBoolean("shield",false);}
+  @JavascriptInterface public int getBlockedAttempts(){return getSharedPreferences("focus",MODE_PRIVATE).getInt("blockedAttempts",0);}
+  @JavascriptInterface public void resetBlockedAttempts(){getSharedPreferences("focus",MODE_PRIVATE).edit().putInt("blockedAttempts",0).apply();}
+  @JavascriptInterface public boolean isShieldServiceActive(){String enabled=Settings.Secure.getString(getContentResolver(),Settings.Secure.ENABLED_ACCESSIBILITY_SERVICES);return enabled!=null&&enabled.contains(getPackageName())&&enabled.contains("FocusShieldService");}
  }
  @Override public void onBackPressed(){if(web.canGoBack())web.goBack();else super.onBackPressed();}
 }
