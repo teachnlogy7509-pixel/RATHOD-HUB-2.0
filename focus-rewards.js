@@ -16,14 +16,15 @@ const AVATARS=[
  {id:'legend-boy',hours:50,name:'Rathod Legend',gender:'boys',accent:'#f59e0b',hair:'#e8e8ef',skin:'#e8b991',shirt:'#fff5df',style:'hero',tag:'50 HOURS'},
  {id:'legend-girl',hours:50,name:'Rathod Empress',gender:'girls',accent:'#d946ef',hair:'#f0d4ff',skin:'#f2c7a9',shirt:'#fff0ff',style:'twin',tag:'50 HOURS'}
 ];
+const LEGACY={starter:'rookie-boy',scholar:'scholar-boy',botanist:'bio-boy',phoenix:'phoenix-boy',knight:'knight-boy',legend:'legend-boy'};
 let filter='all',installPrompt=window.__rathodInstallPrompt||null;
 const read=(k,d)=>{try{return JSON.parse(localStorage.getItem(k))??d}catch{return d}};
 const write=(k,v)=>localStorage.setItem(k,JSON.stringify(v));
 function weekStart(){const d=new Date();d.setHours(0,0,0,0);d.setDate(d.getDate()-((d.getDay()+6)%7));return d}
 function weeklySeconds(){const start=weekStart();return read(KEY.sessions,[]).filter(x=>new Date(x.started_at||x.date)>=start).reduce((n,x)=>n+Number(x.seconds||x.duration_seconds||0),0)}
 function format(sec){const h=Math.floor(sec/3600),m=Math.floor(sec%3600/60);return `${h}h ${m}m`}
-function claimed(){const old=read(KEY.claimed,['starter']);const mapped=old.map(x=>x==='starter'?'rookie-boy':x);if(!mapped.includes('rookie-boy'))mapped.push('rookie-boy');if(!mapped.includes('rookie-girl'))mapped.push('rookie-girl');return new Set(mapped)}
-function selected(){const id=read(KEY.selected,'rookie-boy');return id==='starter'?'rookie-boy':id}
+function claimed(){const old=read(KEY.claimed,['starter']);const mapped=old.map(x=>LEGACY[x]||x);if(!mapped.includes('rookie-boy'))mapped.push('rookie-boy');if(!mapped.includes('rookie-girl'))mapped.push('rookie-girl');return new Set(mapped)}
+function selected(){const id=read(KEY.selected,'rookie-boy');return LEGACY[id]||id}
 function avatar(id){return AVATARS.find(x=>x.id===id)||AVATARS[0]}
 function hair(a){const c=a.hair;const map={
  spike:`<path d="M66 99c3-35 28-58 63-58 29 0 52 16 62 44l-20-9-10 13-16-13-14 14-15-13-14 13-12-10-24 19z" fill="${c}"/><path d="M86 60l18-25 9 20 17-24 13 23 21-17 3 27" fill="${c}"/>`,
