@@ -1,0 +1,18 @@
+(()=>{
+'use strict';
+const ENDPOINT='https://rathod-ai-api.rathod-hub-ai.workers.dev/chat';
+const HEALTH='https://rathod-ai-api.rathod-hub-ai.workers.dev/';
+const KEY='rh2_rathod_ai_history_v1';
+const $=s=>document.querySelector(s);
+let sending=false,history=[];
+const esc=v=>String(v??'').replace(/[&<>"']/g,m=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[m]));
+function load(){try{history=JSON.parse(localStorage.getItem(KEY)||'[]');if(!Array.isArray(history))history=[]}catch{history=[]}if(!history.length)history=[{role:'assistant',content:'नमस्ते! मैं Rathod AI हूँ 😊\nNEET, study planning, याद करने की tricks, motivation या RATHOD HUB 2.0—जो पूछना है पूछिए।',time:Date.now(),welcome:true}];render()}
+function save(){try{localStorage.setItem(KEY,JSON.stringify(history.slice(-500)))}catch{history=history.slice(-150);localStorage.setItem(KEY,JSON.stringify(history))}}
+function render(){const root=$('#rathodAiMessages');if(!root)return;root.innerHTML=history.map((m,i)=>`<article class="rh-ai-message ${m.role}"><div class="rh-ai-avatar">${m.role==='assistant'?'R':'●'}</div><div><small>${m.role==='assistant'?'RATHOD AI':'YOU'}</small><p>${esc(m.content).replace(/\n/g,'<br>')}</p>${m.provider?`<em>${esc(m.provider)}</em>`:''}</div></article>`).join('');root.scrollTop=root.scrollHeight;$('#rathodAiMemoryCount').textContent=`${history.filter(x=>!x.welcome).length} messages remembered`}
+function add(role,content,extra={}){history.push({role,content,time:Date.now(),...extra});save();render()}
+function setBusy(on){sending=on;const b=$('#rathodAiSend'),input=$('#rathodAiInput');if(b){b.disabled=on;b.innerHTML=on?'<i></i> सोच रहा हूँ…':'भेजें ➤'}if(input)input.disabled=on;$('#rathodAiTyping')?.classList.toggle('hidden',!on)}
+async function send(text){text=String(text||'').trim();if(!text||sending)return;add('user',text);$('#rathodAiInput').value='';setBusy(true);try{if(!navigator.onLine)throw new Error('Internet बंद है। Chat history सुरक्षित है; online होते ही फिर भेजें।');const messages=history.filter(x=>!x.welcome).map(x=>({role:x.role,content:x.content}));const r=await fetch(ENDPOINT,{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({messages})});const data=await r.json().catch(()=>({}));if(!r.ok)throw new Error(data.error||`Rathod AI error (${r.status})`);add('assistant',String(data.text||'जवाब नहीं मिला। फिर कोशिश करें।').replace(/\*+/g,''),{provider:`${data.provider||'Rathod AI'} · ${data.model||'auto'}`})}catch(e){add('assistant',e.message||'अभी connection नहीं हो पाया। थोड़ी देर बाद फिर कोशिश करें।',{error:true})}finally{setBusy(false);$('#rathodAiInput')?.focus()}}
+async function health(){try{const r=await fetch(HEALTH,{cache:'no-store'}),d=await r.json();const badge=$('#rathodAiStatus');if(!badge)return;if(d.configured){badge.textContent=`● ONLINE · ${d.configured}/7 AI`;badge.classList.add('online')}else{badge.textContent='○ API keys pending';badge.classList.remove('online')}}catch{$('#rathodAiStatus').textContent='○ Gateway offline'}}
+function boot(){load();health();$('#rathodAiForm')?.addEventListener('submit',e=>{e.preventDefault();send($('#rathodAiInput').value)});document.querySelectorAll('[data-ai-prompt]').forEach(b=>b.onclick=()=>send(b.dataset.aiPrompt));$('#rathodAiNew')?.addEventListener('click',()=>{if(!confirm('Rathod AI की इस device वाली chat history साफ करें?'))return;history=[];localStorage.removeItem(KEY);load()});$('#rathodAiInput')?.addEventListener('keydown',e=>{if(e.key==='Enter'&&!e.shiftKey){e.preventDefault();$('#rathodAiForm').requestSubmit()}});window.addEventListener('online',health)}
+if(document.readyState==='loading')document.addEventListener('DOMContentLoaded',boot,{once:true});else boot();
+})();
