@@ -3,15 +3,18 @@ const REACTIONS=['👍','❤️','🔥','🎉','💡','👏'];
 const $=s=>document.querySelector(s),$$=s=>[...document.querySelectorAll(s)];
 const esc=s=>String(s??'').replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
 const initials=n=>String(n||'VIP').trim().split(/\s+/).map(x=>x[0]).join('').slice(0,2).toUpperCase();
+function avatarReference(value){const v=String(value||'').trim();if(/^rathod-avatar:[a-z0-9-]+$/i.test(v)||/^data:image\/webp;base64,[A-Za-z0-9+/]+={0,2}$/.test(v))return v;try{const u=new URL(v,location.href);return u.protocol==='https:'?u.href:''}catch{return ''}}
+function avatarImage(value){const ref=avatarReference(value);if(ref.startsWith('rathod-avatar:')){const src=window.__rathodAvatarImage?.(ref.slice(14))||'';return /^data:image\/webp;base64,[A-Za-z0-9+/]+={0,2}$/.test(src)?src:''}return ref}
 function equippedAvatar(){try{const a=JSON.parse(localStorage.getItem('rh_ypt_equippedAvatar')||'null');return a&&typeof a.src==='string'&&/^data:image\/webp;base64,[A-Za-z0-9+/]+={0,2}$/.test(a.src)?a:null}catch{return null}}
-function personAvatar(displayName,userId,className=''){const a=user?.id&&userId===user.id?equippedAvatar():null;return `<span class="avatar${className?' '+className:''}${a?' has-reward-avatar':''}">${a?`<img class="profile-anime-avatar" src="${esc(a.src)}" alt="${esc(displayName)}">`:initials(displayName)}</span>`}
+function personAvatar(displayName,userId,className='',profileRef=''){const src=avatarImage(profileRef)||(user?.id&&userId===user.id?equippedAvatar()?.src:'');return `<span class="avatar${className?' '+className:''}${src?' has-reward-avatar':''}">${src?`<img class="profile-anime-avatar" src="${esc(src)}" alt="${esc(displayName)}">`:initials(displayName)}</span>`}
 
 const when=v=>new Date(v).toLocaleString('en-IN',{day:'numeric',month:'short',hour:'2-digit',minute:'2-digit'});
-let client,user=null,name='VIP Member',posts=[],comments=[],reactions=[],replyTarget=null,reloadTimer=null;
+let client,user=null,name='VIP Member',posts=[],comments=[],reactions=[],avatarUrls={},replyTarget=null,reloadTimer=null;
 
 function notify(message){const t=$('#toast');if(t){t.textContent=message;t.classList.add('show');setTimeout(()=>t.classList.remove('show'),2600)}}
 function setupError(message){$('#communityStatus').innerHTML=`<div class="community-error"><b>Community setup required</b><span>${esc(message)}</span><small>Admin को Supabase में <code>ypt_community.sql</code> run करना होगा।</small></div>`}
 async function refreshSession(){const {data}=await client.auth.getSession();user=data.session?.user||null;name=user?.user_metadata?.full_name||user?.email?.split('@')[0]||'VIP Member'}
+async function refreshCommunityAvatarUrls(){if(!client||!user)return;const userIds=[...new Set([...posts,...comments].map(x=>x.user_id).filter(Boolean))];if(!userIds.length){avatarUrls={};return}const {data,error}=await client.from('ypt_profiles').select('id,avatar_url').in('id',userIds);if(!error)avatarUrls=Object.fromEntries((data||[]).map(x=>[x.id,avatarReference(x.avatar_url)]))}
 async function loadCommunity(){
   if(!user){$('#communityFeed').innerHTML='<div class="empty-real"><b>Login required</b>VIP Community खोलने के लिए login करें।</div>';return}
   $('#communityStatus').innerHTML='';
@@ -21,12 +24,12 @@ async function loadCommunity(){
   if(!ids.length){comments=[];reactions=[];renderCommunity();return}
   const [c,r]=await Promise.all([client.from('ypt_community_comments').select('*').in('post_id',ids).order('created_at',{ascending:true}),client.from('ypt_community_reactions').select('*').in('post_id',ids)]);
   if(c.error||r.error){setupError(c.error?.message||r.error?.message);return}
-  comments=c.data||[];reactions=r.data||[];renderCommunity();
+  comments=c.data||[];reactions=r.data||[];await refreshCommunityAvatarUrls();renderCommunity();
 }
 function renderCommentTree(postId,parentId=null,depth=0){
   return comments.filter(c=>c.post_id===postId&&(c.parent_comment_id||null)===parentId).map(c=>{
     const children=renderCommentTree(postId,c.id,depth+1),replying=replyTarget===c.id;
-    return `<div class="community-comment" style="--reply-depth:${Math.min(depth,5)}"><div class="comment-line">${personAvatar(c.display_name,c.user_id)}<div><b>${esc(c.display_name)}</b><small>${when(c.created_at)}</small><p>${esc(c.body)}</p><button class="comment-reply" data-reply-comment="${c.id}" data-reply-post="${postId}">↳ Reply</button></div></div>${replying?`<form class="inline-reply-form" data-comment-form="${postId}" data-parent="${c.id}"><input required maxlength="600" placeholder="Reply to ${esc(c.display_name)}…"><button>Send</button></form>`:''}${children?`<div class="comment-children">${children}</div>`:''}</div>`
+    return `<div class="community-comment" style="--reply-depth:${Math.min(depth,5)}"><div class="comment-line">${personAvatar(c.display_name,c.user_id,'',avatarUrls[c.user_id])}<div><b>${esc(c.display_name)}</b><small>${when(c.created_at)}</small><p>${esc(c.body)}</p><button class="comment-reply" data-reply-comment="${c.id}" data-reply-post="${postId}">↳ Reply</button></div></div>${replying?`<form class="inline-reply-form" data-comment-form="${postId}" data-parent="${c.id}"><input required maxlength="600" placeholder="Reply to ${esc(c.display_name)}…"><button>Send</button></form>`:''}${children?`<div class="comment-children">${children}</div>`:''}</div>`
   }).join('')
 }
 function renderCommunity(){
@@ -36,13 +39,15 @@ function renderCommunity(){
     const mine=reactions.find(r=>r.post_id===p.id&&r.user_id===user?.id)?.reaction_type;
     const buttons=REACTIONS.map(icon=>{const count=reactions.filter(r=>r.post_id===p.id&&r.reaction_type===icon).length;return `<button class="reaction-btn ${mine===icon?'active':''}" data-react-post="${p.id}" data-reaction="${icon}"><span>${icon}</span><b>${count||''}</b></button>`}).join('');
     const postComments=comments.filter(c=>c.post_id===p.id).length;
-    return `<article class="community-post"><header>${personAvatar(p.display_name,p.user_id,'community-avatar')}<div><b>${esc(p.display_name)}</b><small>VIP MEMBER · ${when(p.created_at)}</small></div><span class="vip-chip">VIP</span></header><p class="post-body">${esc(p.body)}</p><div class="reaction-row">${buttons}</div><div class="comments-head"><b>💬 ${postComments} ${postComments===1?'comment':'comments'}</b><span>Replies stay inside this post</span></div><div class="comment-tree">${renderCommentTree(p.id)}</div><form class="new-comment-form" data-comment-form="${p.id}" data-parent=""><input required maxlength="600" placeholder="Write a comment…"><button>Post</button></form></article>`
+    return `<article class="community-post"><header>${personAvatar(p.display_name,p.user_id,'community-avatar',avatarUrls[p.user_id])}<div><b>${esc(p.display_name)}</b><small>VIP MEMBER · ${when(p.created_at)}</small></div><span class="vip-chip">VIP</span></header><p class="post-body">${esc(p.body)}</p><div class="reaction-row">${buttons}</div><div class="comments-head"><b>💬 ${postComments} ${postComments===1?'comment':'comments'}</b><span>Replies stay inside this post</span></div><div class="comment-tree">${renderCommentTree(p.id)}</div><form class="new-comment-form" data-comment-form="${p.id}" data-parent=""><input required maxlength="600" placeholder="Write a comment…"><button>Post</button></form></article>`
   }).join('');
   $$('[data-react-post]').forEach(b=>b.onclick=()=>reactToPost(b.dataset.reactPost,b.dataset.reaction));
   $$('[data-reply-comment]').forEach(b=>b.onclick=()=>{replyTarget=replyTarget===b.dataset.replyComment?null:b.dataset.replyComment;renderCommunity();if(replyTarget)$(`[data-parent="${replyTarget}"] input`)?.focus()});
   $$('[data-comment-form]').forEach(f=>f.onsubmit=sendComment);
 }
-window.addEventListener('rathod-avatar-equipped',()=>renderCommunity());
+window.addEventListener('rathod-avatar-equipped',event=>{if(user?.id&&event.detail?.avatarUrl)avatarUrls[user.id]=event.detail.avatarUrl;renderCommunity()});
+window.addEventListener('rathod-view-changed',event=>{if(event.detail?.view==='community')loadCommunity()});
+setInterval(()=>{if(document.querySelector('[data-page="community"]')?.classList.contains('active'))refreshCommunityAvatarUrls().then(renderCommunity)},60000);
 async function reactToPost(postId,type){
   if(!user)return notify('Login required');
   const current=reactions.find(r=>r.post_id===postId&&r.user_id===user.id),snapshot=[...reactions];
