@@ -1,5 +1,5 @@
-const CACHE='ypt-rathod-v35-shared-avatars';
-const CORE=['./','./index.html','./ypt.css?v=24','./ypt.js?v=22','./community.js?v=19','./vip-zone.js?v=19','./focus-rewards.js?v=28','./feedback.js?v=1','./rathod-ai.css?v=3','./rathod-ai.js?v=3','./gyaan-auth-fix.js','./rathod-compat.js?v=19','./rathod-live-sync.js','./vendor/supabase.min.js','./manifest.webmanifest','./icons/ypt-logo.svg','./icons/maskable.svg'];
+const CACHE='ypt-rathod-v37-avatar-visible-fix';
+const CORE=['./','./index.html','./ypt.css?v=25','./ypt.js?v=23','./community.js?v=20','./vip-zone.js?v=20','./focus-rewards.js?v=29','./feedback.js?v=1','./rathod-ai.css?v=3','./rathod-ai.js?v=3','./gyaan-auth-fix.js','./rathod-compat.js?v=19','./rathod-live-sync.js','./vendor/supabase.min.js','./manifest.webmanifest','./icons/ypt-logo.svg','./icons/maskable.svg'];
 self.addEventListener('install',event=>event.waitUntil((async()=>{const cache=await caches.open(CACHE);await Promise.allSettled(CORE.map(url=>cache.add(new Request(url,{cache:'reload'}))));await self.skipWaiting()})()));
 self.addEventListener('activate',event=>event.waitUntil((async()=>{const keys=await caches.keys();await Promise.all(keys.filter(k=>k!==CACHE).map(k=>caches.delete(k)));await self.clients.claim()})()));
 async function navigation(request){try{const fresh=await fetch(request);const cache=await caches.open(CACHE);cache.put('./index.html',fresh.clone());return fresh}catch{return(await caches.match(request))||(await caches.match('./index.html'))||Response.error()}}

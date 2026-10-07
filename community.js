@@ -3,7 +3,7 @@ const REACTIONS=['👍','❤️','🔥','🎉','💡','👏'];
 const $=s=>document.querySelector(s),$$=s=>[...document.querySelectorAll(s)];
 const esc=s=>String(s??'').replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
 const initials=n=>String(n||'VIP').trim().split(/\s+/).map(x=>x[0]).join('').slice(0,2).toUpperCase();
-function avatarReference(value){const v=String(value||'').trim();if(/^rathod-avatar:[a-z0-9-]+$/i.test(v)||/^data:image\/webp;base64,[A-Za-z0-9+/]+={0,2}$/.test(v))return v;try{const u=new URL(v,location.href);return u.protocol==='https:'?u.href:''}catch{return ''}}
+function avatarReference(value){const v=String(value||'').trim();if(!v)return '';if(/^rathod-avatar:[a-z0-9-]+$/i.test(v)||/^data:image\/webp;base64,[A-Za-z0-9+/]+={0,2}$/.test(v))return v;try{const u=new URL(v,location.href);return u.protocol==='https:'?u.href:''}catch{return ''}}
 function avatarImage(value){const ref=avatarReference(value);if(ref.startsWith('rathod-avatar:')){const src=window.__rathodAvatarImage?.(ref.slice(14))||'';return /^data:image\/webp;base64,[A-Za-z0-9+/]+={0,2}$/.test(src)?src:''}return ref}
 function equippedAvatar(){try{const a=JSON.parse(localStorage.getItem('rh_ypt_equippedAvatar')||'null');return a&&typeof a.src==='string'&&/^data:image\/webp;base64,[A-Za-z0-9+/]+={0,2}$/.test(a.src)?a:null}catch{return null}}
 function personAvatar(displayName,userId,className='',profileRef=''){const src=avatarImage(profileRef)||(user?.id&&userId===user.id?equippedAvatar()?.src:'');return `<span class="avatar${className?' '+className:''}${src?' has-reward-avatar':''}">${src?`<img class="profile-anime-avatar" src="${esc(src)}" alt="${esc(displayName)}">`:initials(displayName)}</span>`}
