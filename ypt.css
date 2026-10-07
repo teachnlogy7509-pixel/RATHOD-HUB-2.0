@@ -82,3 +82,6 @@ button,a,[role="button"]{-webkit-tap-highlight-color:transparent;touch-action:ma
 
 .avatar-reward-controls{display:grid;grid-template-columns:1fr;gap:8px}.avatar-reward-control-row{display:flex;gap:8px;min-width:0}.avatar-reward-control-row[hidden]{display:none!important}.avatar-reward-control-row button{min-width:0;white-space:normal;line-height:1.3}
 @media(max-width:540px){.avatar-reward-control-row[data-control-group="track"] button{font-size:9px;padding-left:4px;padding-right:4px}}
+
+/* Keep equipped artwork clipped to each identity avatar shape. */
+.desk-avatar.has-reward-avatar{padding:0;overflow:hidden}.desk-avatar .profile-anime-avatar{border-radius:inherit}
