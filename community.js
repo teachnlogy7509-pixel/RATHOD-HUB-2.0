@@ -47,7 +47,7 @@ function renderCommunity(){
 }
 window.addEventListener('rathod-avatar-equipped',event=>{if(user?.id&&event.detail?.avatarUrl)avatarUrls[user.id]=event.detail.avatarUrl;renderCommunity()});
 window.addEventListener('rathod-view-changed',event=>{if(event.detail?.view==='community')loadCommunity()});
-setInterval(()=>{if(document.querySelector('[data-page="community"]')?.classList.contains('active'))refreshCommunityAvatarUrls().then(renderCommunity)},60000);
+setInterval(()=>{if(!document.hidden&&document.querySelector('[data-page="community"]')?.classList.contains('active'))refreshCommunityAvatarUrls().then(renderCommunity)},60000);
 async function reactToPost(postId,type){
   if(!user)return notify('Login required');
   const current=reactions.find(r=>r.post_id===postId&&r.user_id===user.id),snapshot=[...reactions];

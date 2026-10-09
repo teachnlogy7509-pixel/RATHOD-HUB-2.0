@@ -1,0 +1,12 @@
+/* Smooth/lite performance layer */
+.avatar-lock{backdrop-filter:none!important;background:#09070bb8!important}
+.avatar-3d i{filter:none!important;opacity:.45}
+.avatar-reward-tabs{backdrop-filter:none!important;background:var(--paper)!important}
+dialog::backdrop,.pwa-help-dialog::backdrop{backdrop-filter:none!important}
+.avatar-reward-card{content-visibility:auto;contain-intrinsic-size:auto 280px}
+.community-post,.group-card{content-visibility:auto;contain-intrinsic-size:auto 220px}
+html{scroll-behavior:auto}
+.brand-mark,.install-app-btn{animation:none!important}
+img{content-visibility:auto}
+html.lite *,html.lite *::before,html.lite *::after{animation:none!important;transition:none!important;box-shadow:none!important;text-shadow:none!important}
+@media (prefers-reduced-motion:reduce){*,*::before,*::after{animation:none!important;transition:none!important;scroll-behavior:auto!important}}
