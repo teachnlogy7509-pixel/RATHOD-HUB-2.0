@@ -69,7 +69,7 @@ function scheduleReload(){clearTimeout(reloadTimer);reloadTimer=setTimeout(loadC
 async function initCommunity(){
   if(!window.supabase||!$('#communityFeed'))return;client=window.supabase.createClient(COMMUNITY_SUPABASE.url,COMMUNITY_SUPABASE.key);await refreshSession();
   client.auth.onAuthStateChange(async()=>{await refreshSession();loadCommunity()});
-  const open=()=>{if(!user)return $('#authDialog')?.showModal();$('#communityPostDialog').showModal()};$('#newCommunityPost').onclick=open;$('#newCommunityPostSide').onclick=open;$('#communityPostForm').onsubmit=publishPost;
+  const open=()=>{if(!user)return $('#authDialog')?.showModal();$('#communityPostDialog').showModal()};$('#newCommunityPost').onclick=open;const sideBtn=$('#newCommunityPostSide');if(sideBtn)sideBtn.onclick=open;$('#communityPostForm').onsubmit=publishPost;
   client.channel('ypt-vip-community').on('postgres_changes',{event:'*',schema:'public',table:'ypt_community_posts'},scheduleReload).on('postgres_changes',{event:'*',schema:'public',table:'ypt_community_comments'},scheduleReload).on('postgres_changes',{event:'*',schema:'public',table:'ypt_community_reactions'},scheduleReload).subscribe();
   await loadCommunity();
 }
