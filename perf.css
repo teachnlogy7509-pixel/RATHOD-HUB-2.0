@@ -11,7 +11,9 @@ img{content-visibility:auto}
 html.lite *,html.lite *::before,html.lite *::after{animation:none!important;transition:none!important;box-shadow:none!important;text-shadow:none!important}
 @media (prefers-reduced-motion:reduce){*,*::before,*::after{animation:none!important;transition:none!important;scroll-behavior:auto!important}}
 
-.hub-family{margin-top:16px}.hub-family h2{margin:4px 0}.hub-family p{margin:0 0 10px;opacity:.75}
-.hub-family-list{display:grid;gap:10px}.hub-family-list a{display:flex;align-items:center;gap:12px;padding:12px 14px;border:1px solid #f0b83c44;border-radius:14px;text-decoration:none;color:inherit;background:#f0b83c0d}
-.hub-family-list a>span{font-size:22px}.hub-family-list a div{flex:1;min-width:0}.hub-family-list b{display:block}.hub-family-list small{opacity:.7}
-.hub-family-list i{font-style:normal;font-weight:800;font-size:12px;color:#2b1b00;background:linear-gradient(135deg,#ffd978,#f0b83c);padding:7px 12px;border-radius:999px;white-space:nowrap}
+.hub-family,.contact-admin{margin-top:16px}.hub-family summary{display:flex;align-items:center;gap:10px;cursor:pointer;list-style:none;font-size:16px}.hub-family summary::-webkit-details-marker{display:none}.hub-family summary i{margin-left:auto;font-style:normal}
+.hub-family-list{display:grid;gap:10px;margin-top:12px}.hub-family-list a,.contact-card{display:flex;align-items:center;gap:12px;padding:13px 14px;border:1px solid #f0b83c44;border-radius:14px;text-decoration:none;color:inherit;background:#f0b83c0d}
+.hub-family-list a>span,.contact-card .ci{font-size:22px;width:44px;height:44px;border-radius:12px;display:grid;place-items:center;background:#f0b83c22;flex:none}.hub-family-list a>span{width:auto;height:auto;background:none}
+.hub-family-list a div,.contact-card div{flex:1;min-width:0}.hub-family-list b,.contact-card b{display:block;word-break:break-all}.hub-family-list small,.contact-card small{opacity:.7}
+.hub-family-list em{font-style:normal;font-weight:800;font-size:12px;color:#2b1b00;background:linear-gradient(135deg,#ffd978,#f0b83c);padding:7px 12px;border-radius:999px;white-space:nowrap}
+.contact-admin{display:grid;gap:10px}.contact-admin h2{margin:4px 0 0;font-size:18px}
