@@ -1,5 +1,5 @@
 const COMMUNITY_SUPABASE={url:'https://oeacgchzyilgqzaqxssh.supabase.co',key:'sb_publishable_boL9uWFxb1hcOx7o9nb9Rw_OERUARlv'};
-const REACTIONS=['👍','❤️','🔥','🎉','💡','👏'];
+const REACTIONS=['👍','❤️','🔥','😂','😢','👏'];
 const $=s=>document.querySelector(s),$$=s=>[...document.querySelectorAll(s)];
 const esc=s=>String(s??'').replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
 const initials=n=>String(n||'VIP').trim().split(/\s+/).map(x=>x[0]).join('').slice(0,2).toUpperCase();
