@@ -17,3 +17,10 @@ html.lite *,html.lite *::before,html.lite *::after{animation:none!important;tran
 .hub-family-list a div,.contact-card div{flex:1;min-width:0}.hub-family-list b,.contact-card b{display:block;word-break:break-all}.hub-family-list small,.contact-card small{opacity:.7}
 .hub-family-list em{font-style:normal;font-weight:800;font-size:12px;color:#2b1b00;background:linear-gradient(135deg,#ffd978,#f0b83c);padding:7px 12px;border-radius:999px;white-space:nowrap}
 .contact-admin{display:grid;gap:10px}.contact-admin h2{margin:4px 0 0;font-size:18px}
+
+.help-dialog{max-width:440px;width:calc(100% - 24px);max-height:88vh;overflow:auto;padding:22px 18px!important;position:relative}.help-dialog.wide{max-width:520px}
+.help-dialog>small{color:#f0b83c;font-weight:800;letter-spacing:.5px;font-size:11px}.help-dialog>h2{margin:6px 0 4px;font-size:20px}.help-dialog>p{margin:0 0 14px;opacity:.75;font-size:14px}
+.help-dialog .dialog-x{position:absolute;top:10px;right:12px}
+.help-dialog .contact-admin,.help-dialog .hub-family{margin:0;padding:0;border:0;background:none;box-shadow:none}
+.help-dialog .feedback-panel{margin:0;border:0;background:none;box-shadow:none;padding:0}
+.help-dialog::backdrop{background:#000a}
