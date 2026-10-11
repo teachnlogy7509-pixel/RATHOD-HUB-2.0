@@ -31,3 +31,5 @@ html.lite *,html.lite *::before,html.lite *::after{animation:none!important;tran
 .yi-copy{border:0;border-radius:999px;padding:7px 14px;font-weight:800;font-size:12px;color:#2b1b00;background:linear-gradient(135deg,#ffd978,#f0b83c);cursor:pointer}
 .yi-text{margin:0;word-break:break-word;line-height:1.5}.yi-desc{white-space:pre-wrap;font-family:inherit;max-height:320px;overflow:auto;font-size:14px}.yi-sub{display:block;opacity:.65;font-size:12px;margin-top:8px}.yi-warn{color:#ffd978;font-size:13px}
 .yi-chips{display:flex;flex-wrap:wrap;gap:8px}.yi-chip{border:1px solid #f0b83c66;background:#f0b83c14;color:inherit;border-radius:999px;padding:8px 13px;font-size:13px;cursor:pointer;transition:background .15s}.yi-chip.done{background:#3ecf8e55;border-color:#3ecf8e}
+
+.help-dialog #ytInfoForm{margin-bottom:6px}
