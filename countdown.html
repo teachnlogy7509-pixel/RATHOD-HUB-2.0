@@ -1,0 +1,23 @@
+<!doctype html>
+<html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Countdown</title>
+<style>
+html,body{margin:0;height:100%;background:transparent;overflow:hidden;font-family:Arial,Helvetica,sans-serif}
+body{display:flex;flex-direction:column;align-items:center;justify-content:center;text-align:center;color:#fff;text-shadow:0 4px 18px #000b}
+#t{font-weight:900;font-size:min(30vw,48vh);letter-spacing:2px;line-height:1;font-variant-numeric:tabular-nums}
+#l{font-weight:800;font-size:min(7vw,12vh);margin-top:2vh;opacity:.95}
+.end #t{color:#7CFF4F}
+</style></head><body>
+<div id="t">05:00</div><div id="l"></div>
+<script>
+var q=new URLSearchParams(location.search);
+var total=Math.max(1,Math.round((parseFloat(q.get('m')||'5')*60)+(parseFloat(q.get('s')||'0'))));
+var color=q.get('color');if(color)document.getElementById('t').style.color='#'+color.replace('#','');
+var label=q.get('text')||'';document.getElementById('l').textContent=label;
+var end=Date.now()+total*1000,t=document.getElementById('t');
+function p(n){return n<10?'0'+n:''+n}
+function tick(){var r=Math.max(0,Math.ceil((end-Date.now())/1000)),h=Math.floor(r/3600),m=Math.floor(r%3600/60),s=r%60;
+t.textContent=(h?h+':':'')+p(m)+':'+p(s);
+if(r<=0){document.body.classList.add('end');document.getElementById('l').textContent=q.get('done')||'Welcome back!';clearInterval(iv)}}
+tick();var iv=setInterval(tick,250);
+</script></body></html>
