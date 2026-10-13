@@ -13,3 +13,9 @@
 .wallet-link-details summary{display:flex;justify-content:flex-end;align-items:center;min-height:44px;min-width:70px}.wallet-invite-footer{align-items:center}
 /* Keep small wallet copy readable on phones. */
 .wallet-wordmark,.wallet-card-top,.wallet-invite-tag,.wallet-card-bottom span,.wallet-card-caption,.wallet-invite-footer,.wallet-invite-footer p,.wallet-link-details summary,#walletStudyProgressText,.wallet-week-total small,.wallet-transaction p,.wallet-transaction small{font-size:14px}.wallet-coming-tag{font-size:12px}.wallet-card-top{letter-spacing:1.2px}.wallet-invite-tag{letter-spacing:1.2px}.wallet-card-bottom .wallet-validity b{font-size:14px}
+
+/* Upcoming store occupies the eighth VIP Zone tile, not a separate banner. */
+.vip-feature-grid>.wallet-upcoming-card:last-child{grid-column:auto;border-color:#81704b;background:linear-gradient(145deg,#292318,#13120f)}
+.wallet-upcoming-card>span{background:#342a18;color:#e5ca90}.wallet-upcoming-card>span svg{width:25px;height:25px;display:block}
+.wallet-upcoming-card em{background:#332817;color:#eed29b;border:1px solid #7c6238;font-size:9px;letter-spacing:.6px}
+.wallet-upcoming-card b{font-size:14px}.wallet-upcoming-card small{font-size:14px;color:#c3b493}
