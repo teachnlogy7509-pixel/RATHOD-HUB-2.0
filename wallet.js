@@ -6,6 +6,7 @@ const dateTime=t=>new Date(t).toLocaleString('en-IN',{timeZone:'Asia/Kolkata',da
 const shortDate=t=>new Date(t+'T12:00:00+05:30').toLocaleDateString('en-IN',{timeZone:'Asia/Kolkata',weekday:'short',day:'numeric',month:'short'});
 const pendingKey='rh_ypt_pending_referral';
 let activeUser=null,generation=0,data=null,ready=false,loading=false,queue=Promise.resolve(),transactions=[],hasMore=false,historyLoading=false,referralApplying=false;
+let liveAckAt=0,liveAckSeconds=0,liveTracking=false,trackingProblem='';
 let status='Sign in to earn study and referral rewards.',statusKind='guest',monitor;
 try{monitor=sessionStorage.getItem('rh_ypt_wallet_monitor');if(!monitor){monitor=crypto.randomUUID();sessionStorage.setItem('rh_ypt_wallet_monitor',monitor)}}catch{monitor=crypto.randomUUID()}
 try{const ref=new URL(location.href).searchParams.get('ref');if(ref&&/^[a-f\d]{12}$/i.test(ref))localStorage.setItem(pendingKey,ref.toUpperCase())}catch{}
@@ -23,6 +24,17 @@ function renderHistory(){
  if($('#walletTransactions'))$('#walletTransactions').innerHTML=transactions.length?transactions.map(row).join(''):`<p class="wallet-history-empty">${ready?'No earnings in the last 7 days. Start a focus session or invite a new learner.':'Your earning history will appear here after Wallet is enabled.'}</p>`;
  $('#walletLoadMore')?.classList.toggle('hidden',!ready||!hasMore);
 }
+// Smooth display only: monetary credit is still granted exclusively by Supabase.
+// Show seconds so a small amount of study is visibly updating toward 8 hours.
+function paintProgress(){
+ const ackAge=liveAckAt?Math.max(0,(performance.now()-liveAckAt)/1000):0;
+ const projecting=ready&&liveTracking&&navigator.onLine&&window.rhWalletApp?.running?.()&&user()?.id===activeUser;
+ let progress=Number(data?.progress_seconds||0);
+ if(projecting)progress=Math.min(28799,liveAckSeconds+Math.min(45,Math.floor(ackAge)));
+ const bar=$('#walletStudyProgress'),text=$('#walletStudyProgressText');
+ if(bar){bar.value=ready?progress:0;bar.setAttribute('aria-valuetext',ready?`${Math.floor(progress/3600)} hours ${Math.floor(progress%3600/60)} minutes ${Math.floor(progress%60)} seconds of 8 hours`:'Sign in to earn rewards.');bar.title=projecting?'Live display estimate. Rewards and balance update only after server confirmation.':'Server-confirmed reward study progress.'}
+ if(text){text.textContent=ready?`${Math.floor(progress/3600)}h ${Math.floor(progress%3600/60)}m ${Math.floor(progress%60)}s / 8h${!navigator.onLine?' · Offline':trackingProblem?' · Paused':projecting&&ackAge>45?' · Syncing…':''}`:'Sign in to start earning.';text.title=trackingProblem||(projecting?'The moving seconds are a live display estimate, not extra wallet credits.':'Server-confirmed study seconds.')}
+}
 function render(){
  const today=ready?cash(data.today_earned_paise):'₹—';
  if($('#walletTopToday'))$('#walletTopToday').textContent=ready?new Intl.NumberFormat('en-IN',{minimumFractionDigits:0,maximumFractionDigits:2}).format(Number(data.today_earned_paise||0)/100):'—';
@@ -30,8 +42,7 @@ function render(){
  if($('#walletAvailable'))$('#walletAvailable').textContent=ready?cash(data.available_paise):'₹—';
  if($('#walletToday'))$('#walletToday').textContent=today;
  const st=$('#walletStatus');if(st){st.classList.toggle('ready',ready);st.classList.toggle('hidden',ready);st.innerHTML=esc(status)+(statusKind==='guest'?' <button class="text-btn" id="walletLogin">Sign in →</button>':'');$('#walletLogin')?.addEventListener('click',()=>window.rhWalletApp?.login?.())}
- const progress=Number(data?.progress_seconds||0);if($('#walletStudyProgress'))$('#walletStudyProgress').value=ready?progress:0;
- if($('#walletStudyProgressText'))$('#walletStudyProgressText').textContent=ready?`${Math.floor(progress/3600)}h ${Math.floor(progress%3600/60)}m / 8h`:'Sign in to start earning.';
+ paintProgress();
  if($('#walletExpiryNote'))$('#walletExpiryNote').textContent=ready&&data.expiring_7d_paise>0?`${cash(data.expiring_7d_paise)} expiring soon`:'6 months per credit';
  const link=inviteLink();if($('#walletReferralLink'))$('#walletReferralLink').value=link;
  if($('#walletCopyLink'))$('#walletCopyLink').disabled=!link;if($('#walletShareLink'))$('#walletShareLink').disabled=!link;
@@ -39,7 +50,10 @@ function render(){
  $('#walletReferralForm')?.classList.toggle('hidden',!ready||!data.can_claim_referral);
  renderHistory();
 }
-function accept(snapshot,gen=generation){if(gen!==generation||!user()||user().id!==activeUser)return false;data=snapshot;ready=true;statusKind='ready';status='Wallet connected · Rewards use online, logged-in focus time · India time';transactions=[...(data.transactions||[])];hasMore=transactions.length===50;render();return true}
+function accept(snapshot,gen=generation){if(gen!==generation||!user()||user().id!==activeUser||!snapshot)return false;
+ // A slow Store/refresh response must not roll back a newer focus or balance result.
+ if(data){const incoming=Date.parse(snapshot.server_time),current=Date.parse(data.server_time);if(Number.isFinite(incoming)&&Number.isFinite(current)&&incoming<current)return false;if(Number(snapshot.study_seconds||0)<Number(data.study_seconds||0))return false}
+ data=snapshot;if(liveTracking){liveAckSeconds=Number(snapshot.progress_seconds||0);liveAckAt=performance.now();} ready=true;statusKind='ready';status='Wallet connected · Rewards use online, logged-in focus time · India time';transactions=[...(data.transactions||[])];hasMore=transactions.length===50;render();return true}
 async function refresh(){
  if(loading)return;if(!user()){ready=false;data=null;statusKind='guest';status='Sign in to earn study and referral rewards.';render();return}
  const gen=generation;loading=true;status='Refreshing Wallet…';render();
@@ -54,13 +68,14 @@ async function claim(code){
  finally{if(gen===generation)referralApplying=false}
 }
 async function applyPendingReferral(){let code=data?.pending_referral_code;try{code=code||localStorage.getItem(pendingKey)}catch{}if(code&&ready)await claim(code)}
-function onAuth(u){const id=u?.id||null;if(id===activeUser){if(id&&!loading&&!ready)refresh();return}activeUser=id;generation++;loading=false;referralApplying=false;historyLoading=false;data=null;ready=false;transactions=[];hasMore=false;statusKind=id?'loading':'guest';status=id?'Wallet loading…':'Sign in to earn study and referral rewards.';render();if(id)refresh()}
+function onAuth(u){const id=u?.id||null;if(id===activeUser){if(id&&!loading&&!ready)refresh();return}activeUser=id;generation++;liveTracking=false;liveAckAt=0;liveAckSeconds=0;trackingProblem='';loading=false;referralApplying=false;historyLoading=false;data=null;ready=false;transactions=[];hasMore=false;statusKind=id?'loading':'guest';status=id?'Wallet loading…':'Sign in to earn study and referral rewards.';render();if(id)refresh()}
 function focus(action){
+ if(action==='pause'||action==='finish'){liveTracking=false;paintProgress()}
  const gen=generation,uid=activeUser;
  queue=queue.catch(()=>{}).then(async()=>{
   if(!ready||!uid||uid!==activeUser||gen!==generation||!navigator.onLine)return;
-  try{const snapshot=await rpc('ypt_wallet_focus',{p_action:action,p_monitor:monitor});if(gen===generation)accept(snapshot,gen)}
-  catch(e){if(gen!==generation)return;const st=$('#walletStudyProgressText');if(st)st.textContent='Reward tracking paused: '+errorText(e);if(missing(e)){ready=false;statusKind='pending';status='Wallet setup pending · Run the wallet SQL to enable rewards.';render()}}
+  try{const snapshot=await rpc('ypt_wallet_focus',{p_action:action,p_monitor:monitor});if(gen===generation){if(accept(snapshot,gen)){trackingProblem='';liveTracking=(action==='start'||action==='tick')&&!!window.rhWalletApp?.running?.();liveAckAt=performance.now();liveAckSeconds=Number(data.progress_seconds||0);paintProgress()}}}
+  catch(e){if(gen!==generation)return;liveTracking=false;trackingProblem=errorText(e);const st=$('#walletStudyProgressText');if(st)st.textContent='Reward tracking paused: '+errorText(e);if(missing(e)){ready=false;statusKind='pending';status='Wallet setup pending · Run the wallet SQL to enable rewards.';render()}}
  });return queue;
 }
 async function loadMore(){
@@ -79,9 +94,10 @@ function context(){return {type:'app_reward_credits_not_bank_cash',backendStatus
 window.rhWallet={onAuth,refresh,focus,open,context,acceptSnapshot:accept,signupReferral:()=>{try{return localStorage.getItem(pendingKey)||null}catch{return null}}};
 function boot(){render();$('#walletRefresh')?.addEventListener('click',refresh);$('#walletCopyLink')?.addEventListener('click',copyLink);$('#walletShareLink')?.addEventListener('click',shareLink);$('#walletLoadMore')?.addEventListener('click',loadMore);document.querySelectorAll('[data-wallet-tab]').forEach(b=>b.addEventListener('click',()=>tab(b.dataset.walletTab)));$('#walletReferralForm')?.addEventListener('submit',e=>{e.preventDefault();claim($('#walletReferralCode').value)});
  let n=0;const timer=setInterval(()=>{if(window.rhWalletApp){clearInterval(timer);onAuth(user())}else if(++n>100)clearInterval(timer)},100);
- setInterval(()=>{if(window.rhWalletApp?.running?.()&&ready)focus('tick')},20000);
+ setInterval(paintProgress,1000);
+ setInterval(()=>{if(window.rhWalletApp?.running?.()&&ready&&navigator.onLine)focus('tick')},20000);
  setInterval(()=>{if(ready&&!document.hidden)refresh()},60000);
- window.addEventListener('online',refresh);document.addEventListener('visibilitychange',()=>{if(!document.hidden&&user())refresh()});window.addEventListener('rathod-view-changed',e=>{if(e.detail?.view==='wallet'){window.scrollTo({top:0,behavior:'instant'});const view=$('[data-page=wallet]');if(view)view.scrollTop=0;refresh()}});
+ window.addEventListener('online',refresh);window.addEventListener('offline',()=>{liveTracking=false;paintProgress()});document.addEventListener('visibilitychange',()=>{if(document.hidden&&ready&&window.rhWalletApp?.running?.())focus('tick');if(!document.hidden&&user())refresh()});window.addEventListener('rathod-view-changed',e=>{if(e.detail?.view==='wallet'){window.scrollTo({top:0,behavior:'instant'});const view=$('[data-page=wallet]');if(view)view.scrollTop=0;refresh()}});
 }
 if(document.readyState==='loading')document.addEventListener('DOMContentLoaded',boot);else boot();
 })();

@@ -50,3 +50,5 @@ dialog.reward-catalogue-dialog{width:min(740px,calc(100% - 32px));max-width:740p
 @media(max-width:600px){.store-confirm>div{flex-wrap:wrap}.store-confirm button{flex:1}.study-report-dialog{padding:24px 18px}.analog-focus-clock{max-width:250px}.store-balance-line{margin:14px 0}.reward-catalogue-dialog .catalogue-note{font-size:14px}.store-buy{font-size:14px;padding:10px 6px}}
 
 .store-balance-line button{display:grid;place-items:center;color:#e9d39e}.timer-card.analog-active .timer-display{letter-spacing:-1px}.timer-card.analog-active .timer-actions{position:static}.study-report-dialog .field,.study-report-dialog input,.study-report-dialog select,.study-report-dialog>p{font-size:14px}
+
+.wallet-focus-strip progress::-moz-progress-bar{background:#d2b47b;border-radius:6px}
