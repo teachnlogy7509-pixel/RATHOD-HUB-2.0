@@ -27,7 +27,7 @@
   <link rel="icon" href="icons/ypt-logo.svg" type="image/svg+xml">
   <link rel="stylesheet" href="ypt.css?v=25"><link rel="stylesheet" href="rathod-ai.css?v=4"><link rel="stylesheet" href="perf.css?v=6"><script>try{var n=navigator;if((n.hardwareConcurrency&&n.hardwareConcurrency<=4)||(n.deviceMemory&&n.deviceMemory<=4)||(n.connection&&n.connection.saveData))document.documentElement.classList.add("lite")}catch(e){}</script>
   <script>if("serviceWorker" in navigator){window.addEventListener("load",()=>navigator.serviceWorker.register("sw.js"))}</script>
-<link rel="stylesheet" href="wallet.css?v=3">
+<link rel="stylesheet" href="wallet.css?v=4">
 </head>
 <body>
 <div id="app" class="app">
@@ -219,7 +219,7 @@
       <article class="wallet-invite-card"><div class="wallet-invite-top"><span class="wallet-small-icon">↗</span><span class="wallet-invite-tag">REFER & EARN</span></div><h2>Better together.</h2><p class="wallet-invite-amount">₹10 <span>each</span></p><p class="wallet-invite-caption">You invite. They join. Both earn.</p><div class="wallet-share-actions"><button class="primary" id="walletCopyLink" disabled>Copy invite</button><button class="secondary" id="walletShareLink" disabled>Share ↗</button></div><div class="wallet-invite-footer"><p id="walletReferralCount">0 successful referrals</p><details class="wallet-link-details"><summary>Your link</summary><label class="sr-wallet-only" for="walletReferralLink">Your personal referral link</label><input id="walletReferralLink" readonly placeholder="Sign in to get your link"></details></div><form id="walletReferralForm" class="hidden"><label class="field" for="walletReferralCode">Confirm invite code</label><div class="wallet-code-row"><input id="walletReferralCode" required maxlength="12" autocomplete="off" placeholder="Invite code"><button class="secondary" type="submit">Claim ₹10</button></div></form><p id="walletReferralStatus" role="status" aria-live="polite"></p></article>
     </div>
     <article class="wallet-focus-strip"><div class="wallet-focus-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" aria-hidden="true"><circle cx="12" cy="12" r="9"/><path d="M12 6v6l4 2"/></svg></div><div class="wallet-focus-content"><div class="wallet-focus-title"><h2>Focus pays off.</h2><span>8h → ₹5</span></div><progress id="walletStudyProgress" max="28800" value="0" aria-label="Progress to next ₹5 study reward"></progress><p id="walletStudyProgressText">Sign in to start earning.</p></div><button class="secondary" data-view="timer">Focus →</button></article>
-    <button class="wallet-store-row" data-view="vipzone"><span>Reward Store</span><span class="wallet-coming-tag">COMING SOON</span><span aria-hidden="true">↗</span></button>
+    <button class="wallet-store-row" data-open-dialog="rewardStoreDialog" aria-haspopup="dialog"><span>Reward Store</span><span class="wallet-coming-tag">COMING SOON</span><span aria-hidden="true">↗</span></button>
     <details class="wallet-rules"><summary>How rewards work <span>+</span></summary><ul><li>हर पूरे 8 घंटे के online, logged-in focus पर ₹5। पुराने या offline sessions से reward नहीं बनता।</li><li>आपके unique invite link से नया account बने तो दोनों को ₹10—एक बार। Self-referral और duplicate claims नहीं।</li><li>हर earning अपनी तारीख से 6 महीने बाद expire होती है।</li><li>ये app reward credits हैं, bank cash नहीं। Store अभी upcoming है; purchases और withdrawal उपलब्ध नहीं हैं।</li></ul></details>
   </div>
   <div id="walletHistory" class="hidden" role="tabpanel" aria-labelledby="walletHistoryTab">
@@ -238,7 +238,7 @@
         <button class="vip-feature-card vip" data-view="studyverse" data-requires="vip"><span>🌍</span><div><em>VIP</em><b>Rathod Studyverse</b><small>Virtual subject rooms and desks</small></div><i>›</i></button>
         <button class="vip-feature-card vip" data-view="community" data-requires="vip"><span>📱</span><div><em>VIP</em><b>Study Social Circle</b><small>Posts · replies · private messages</small></div><i>›</i></button>
         <button class="vip-feature-card vip" data-view="voice" data-requires="vip"><span>🎙️</span><div><em>VIP</em><b>Silent Voice Room</b><small>Private realtime audio study room</small></div><i>›</i></button>
-      <button class="vip-feature-card wallet-upcoming-card" data-view="wallet" aria-label="Reward Store upcoming — open Wallet"><span><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" aria-hidden="true"><path d="M5 8h14l1 13H4L5 8Z"/><path d="M8 9V6a4 4 0 0 1 8 0v3"/></svg></span><div><em>UPCOMING</em><b>Reward Store</b><small>Spend wallet credits</small></div><i>›</i></button>
+      <button class="vip-feature-card wallet-upcoming-card" data-open-dialog="rewardStoreDialog" aria-haspopup="dialog" aria-label="Open Upcoming Reward Store"><span><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" aria-hidden="true"><path d="M5 8h14l1 13H4L5 8Z"/><path d="M8 9V6a4 4 0 0 1 8 0v3"/></svg></span><div><em>UPCOMING</em><b>Reward Store</b><small>Spend wallet credits</small></div><i>›</i></button>
       </div><article class="vip-zone-note"><b>🔒 One secure access</b><p>एक active VIP coupon से PRO और VIP दोनों cards खुलेंगे। Expiry account से sync होगी।</p></article>
     </section>
 
@@ -341,8 +341,23 @@
 <dialog id="newPasswordDialog"><small>SET NEW PASSWORD</small><h2>Create a new password</h2><form id="newPasswordForm"><label class="field">New password<input id="newPassword" type="password" minlength="6" required></label><button class="primary wide">Update password</button><p id="newPasswordStatus" class="form-status"></p></form></dialog>
 <dialog id="legalDialog"><button class="dialog-x" data-close>×</button><small>YPT STUDY BY RATHOD</small><h2 id="legalTitle">Policy</h2><div id="legalContent" class="legal-content"></div></dialog>
 
+<dialog id="rewardStoreDialog" class="help-dialog reward-catalogue-dialog" aria-labelledby="rewardStoreTitle" aria-describedby="rewardStoreNote"><button class="dialog-x catalogue-close" data-close type="button" aria-label="Close Reward Store">×</button>
+  <header class="catalogue-head"><span class="catalogue-eyebrow">RATHOD · UPCOMING</span><h2 id="rewardStoreTitle">Reward Store</h2><p>Two rewards. Made for your study journey.</p></header>
+  <div class="catalogue-grid">
+    <article class="catalogue-product catalogue-timer" aria-labelledby="catalogueTimerName">
+      <div class="catalogue-preview catalogue-clock-preview"><span class="catalogue-index">01</span><svg class="catalogue-clock" viewBox="0 0 120 120" fill="none" aria-hidden="true"><circle cx="60" cy="60" r="47" stroke="#d8bc7b" stroke-width="1.5"/><circle cx="60" cy="60" r="40" stroke="#756344" stroke-width=".6"/><path d="M60 18v7M102 60h-7M60 102v-7M18 60h7M81 24l-3 5M96 39l-5 3M96 81l-5-3M81 96l-3-5M39 96l3-5M24 81l5-3M24 39l5 3M39 24l3 5" stroke="#d8bc7b" stroke-width="1.5"/><path d="M60 60 37 44M60 60 82 34" stroke="#f5dfb0" stroke-width="3" stroke-linecap="round"/><circle cx="60" cy="60" r="3" fill="#edcf8e"/></svg><span class="catalogue-preview-label">ANALOG</span></div>
+      <div class="catalogue-product-body"><h3 id="catalogueTimerName">Analog Timer</h3><p>A classic clock-style focus timer.</p><div class="catalogue-price"><strong>₹20</strong><span>Wallet credits</span></div><button class="catalogue-soon" type="button" disabled>Coming soon</button></div>
+    </article>
+    <article class="catalogue-product catalogue-report" aria-labelledby="catalogueReportName">
+      <div class="catalogue-preview catalogue-report-preview"><span class="catalogue-index">02</span><div class="catalogue-paper" aria-hidden="true"><span class="paper-heading">STUDY REPORT</span><span class="paper-subheading">7 DAYS / MONTHLY</span><div class="paper-rule"></div><div class="paper-row"><i></i><i></i></div><div class="paper-row"><i></i><i></i></div><div class="paper-row"><i></i><i></i></div><div class="paper-row"><i></i><i></i></div><div class="paper-rule"></div><span class="paper-stamp">PDF</span></div></div>
+      <div class="catalogue-product-body"><h3 id="catalogueReportName">Study Report PDF</h3><p>7-day or monthly report for parents.</p><div class="catalogue-price"><strong>₹50</strong><span>Wallet credits</span></div><button class="catalogue-soon" type="button" disabled>Coming soon</button></div>
+    </article>
+  </div>
+  <p class="catalogue-note" id="rewardStoreNote">Products are upcoming. No credits will be deducted yet.</p>
+</dialog>
+
 <script src="vendor/supabase.min.js"></script>
-<script src="wallet.js?v=2" defer></script>
+<script src="wallet.js?v=3" defer></script>
 <script src="avatars-girls.js?v=2" defer></script>
   <script src="avatars-boys.js?v=2" defer></script>
   <script src="ypt.js?v=29" type="module"></script>
