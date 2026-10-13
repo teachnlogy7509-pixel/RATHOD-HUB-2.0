@@ -27,6 +27,7 @@
   <link rel="icon" href="icons/ypt-logo.svg" type="image/svg+xml">
   <link rel="stylesheet" href="ypt.css?v=25"><link rel="stylesheet" href="rathod-ai.css?v=4"><link rel="stylesheet" href="perf.css?v=6"><script>try{var n=navigator;if((n.hardwareConcurrency&&n.hardwareConcurrency<=4)||(n.deviceMemory&&n.deviceMemory<=4)||(n.connection&&n.connection.saveData))document.documentElement.classList.add("lite")}catch(e){}</script>
   <script>if("serviceWorker" in navigator){window.addEventListener("load",()=>navigator.serviceWorker.register("sw.js"))}</script>
+<link rel="stylesheet" href="wallet.css?v=1">
 </head>
 <body>
 <div id="app" class="app">
@@ -35,7 +36,7 @@
     <a class="brand" href="#dashboard"><img class="brand-app-icon" src="icons/ypt-logo.svg" alt="YPT"><span>YPT <b>BY RATHOD</b><small>PREMIUM STUDY COMMUNITY</small></span></a>
     <div class="live-chip"><i></i><span id="liveCount">0</span> studying now</div>
     <nav class="top-actions">
-      <button class="icon-btn help-top-btn" data-view="more" aria-label="Help and support" title="Help & Support">?</button>
+      <button class="wallet-top-btn" data-view="wallet" aria-label="Wallet: today’s earnings" title="Today’s earnings · Open Wallet"><strong id="walletTopToday">₹—</strong><small>TODAY</small></button>
       <button class="icon-btn admin-top-btn hidden" id="adminTopBtn" data-view="admin" aria-label="Admin panel" title="Admin Panel">⚡</button>
       <button class="icon-btn notification-btn" id="notificationBtn" aria-label="Notifications">🔔<i id="notificationDot"></i></button>
       <span id="networkBadge" class="network-badge">● ONLINE</span><button id="installAppBtn" class="install-app-btn hidden">↓ Install</button><span class="plan-badge" id="planBadge">FREE</span><button class="profile-btn" id="profileBtn"><span class="avatar" id="topAvatar">R</span><span id="topName">Guest</span></button>
@@ -60,6 +61,7 @@
       <button data-view="history"><span>✓</span> Daily history</button>
       <button data-view="groups" data-requires="premium"><span>♧</span> Study groups</button>
       <button data-view="leaderboard" data-requires="vip"><span>♛</span> Leaderboard</button>
+      <button data-view="wallet" class="wallet-nav"><span>▣</span> Wallet & referrals</button>
       <button data-view="rewards" class="reward-nav"><span>🎁</span> Weekly Avatar Rewards</button>
       <button data-view="premium" class="premium-nav"><span>✦</span> Gold VIP Pass</button>
       <button data-view="vipzone" class="vip-zone-nav"><span>♛</span> PRO & VIP Zone</button>
@@ -80,11 +82,12 @@
         <header class="mobile-focus-hero"><div class="mobile-hero-top"><button id="mobileHeroMenu">☰</button><b id="mobileHeroDate">Today</b><span id="mobileDday">D-0</span></div><div class="mobile-total-label">TODAY FOCUS</div><strong id="mobileTotalTime">00:00:00</strong><div class="mobile-period-tabs"><button class="active" data-view="dashboard">Day</button><button data-view="analytics" data-requires="premium">Week</button><button data-view="calendar">Month</button></div></header>
         <div class="mobile-active-session hidden" id="mobileActiveSession"><div><small>NOW STUDYING</small><b id="mobileActiveSubject">Physics</b><time id="mobileActiveTime">00:00:00</time></div><button id="mobilePauseSession">Ⅱ</button><button id="mobileFinishSession">■</button></div>
         <section class="mobile-subject-section"><div class="mobile-section-head"><div><small>SUBJECTS & TODOS</small><h2>Study and todo</h2></div><button id="mobileAddTodo">＋</button></div><div id="mobileSubjectList" class="mobile-subject-list"></div></section>
-        <div class="mobile-feature-grid"><button class="mobile-insight-banner community-shortcut" data-view="community" data-requires="vip"><span>♨</span><div><b>VIP Community</b><small>Post · react · reply</small></div><i>›</i></button><button class="mobile-insight-banner quality-shortcut" data-view="quality"><span>◎</span><div><b>Focus Quality</b><small>Score · pauses · distractions</small></div><i>›</i></button><button class="mobile-insight-banner vip-zone-shortcut" data-view="vipzone"><span>♛</span><div><b>PRO & VIP Zone</b><small>7 premium experiences</small></div><i>›</i></button></div>
+        <div class="mobile-feature-grid"><button class="mobile-insight-banner wallet-shortcut" data-view="wallet"><span aria-hidden="true">▣</span><div><b>Wallet</b><small id="walletGridToday">Today · ₹—</small></div><i>›</i></button><button class="mobile-insight-banner community-shortcut" data-view="community" data-requires="vip"><span>♨</span><div><b>VIP Community</b><small>Post · react · reply</small></div><i>›</i></button><button class="mobile-insight-banner quality-shortcut" data-view="quality"><span>◎</span><div><b>Focus Quality</b><small>Score · pauses · distractions</small></div><i>›</i></button><button class="mobile-insight-banner vip-zone-shortcut" data-view="vipzone"><span>♛</span><div><b>PRO & VIP Zone</b><small>7 premium experiences</small></div><i>›</i></button></div>
       </div>
       <div class="page-head"><div><small id="todayLabel"></small><h1>YPT by Rathod — Ready to focus?</h1><p>आज की consistency ही कल का result बनेगी।</p></div><button class="primary" data-view="timer">Start studying <span>→</span></button></div>
       <article class="membership-strip" id="membershipStrip"><div><span id="membershipIcon">◇</span><div><small>YOUR ACCESS</small><b id="membershipTitle">Free plan</b><p id="membershipSubtitle">Login and redeem a code to unlock Premium or VIP.</p></div></div><button class="primary" data-view="premium">View access</button></article>
       <button class="desktop-vip-zone" data-view="vipzone"><span>♛</span><div><small>ONE COUPON · ALL FEATURES</small><b>PRO & VIP Zone</b><p>PW Tracker, Diary, Notes, Partner, Studyverse, Social Circle और Voice Room</p></div><i>Explore ›</i></button>
+      <button class="wallet-desktop-shortcut" data-view="wallet"><span>▣</span><div><b>Wallet & referrals</b><small>8 hours = ₹5 · Invite a friend: ₹10 each</small></div><strong id="walletDesktopToday">₹— today</strong><i>›</i></button>
       <div class="stats-grid">
         <article class="stat accent"><span>Today</span><strong id="todayTime">0m</strong><small id="todayDelta">Start your first session</small></article>
         <article class="stat"><span>This week</span><strong id="weekTime">0h 0m</strong><small id="weekSessions">0 sessions</small></article>
@@ -207,6 +210,22 @@
     </section>
 
 
+    <section class="view wallet-view" data-page="wallet">
+  <div class="page-head"><div><small>RATHOD HUB · REWARD CREDITS</small><h1>Your Wallet</h1><p>पढ़ाई से कमाएँ। दोस्तों के साथ बढ़ाएँ।</p></div><button class="secondary" id="walletRefresh">↻ Refresh</button></div>
+  <p class="wallet-status" id="walletStatus" role="status" aria-live="polite">Wallet loading…</p>
+  <div class="wallet-tabs" role="tablist" aria-label="Wallet sections"><button role="tab" id="walletSummaryTab" aria-selected="true" aria-controls="walletSummary" class="active" data-wallet-tab="summary">Wallet</button><button role="tab" id="walletHistoryTab" aria-selected="false" aria-controls="walletHistory" data-wallet-tab="history">7-day history</button></div>
+  <div id="walletSummary" role="tabpanel" aria-labelledby="walletSummaryTab">
+    <div class="wallet-balance-grid"><article class="wallet-balance-card"><small>AVAILABLE CREDITS</small><strong id="walletAvailable">₹—</strong><p>Unspent, unexpired reward balance</p><span id="walletExpiryNote">हर earning 6 महीने बाद expire होती है।</span></article><article class="wallet-today-card"><small>TODAY’S EARNING</small><strong id="walletToday">₹—</strong><p>Study + referral rewards · India time</p></article></div>
+    <div class="wallet-detail-grid"><article class="panel wallet-study-card"><small>STUDY REWARD</small><h2>8 hours → ₹5</h2><p>Logged-in online focus time जोड़ते रहें। हर पूरे 8 घंटे पर ₹5 credit होते हैं।</p><progress id="walletStudyProgress" max="28800" value="0" aria-label="Progress to next ₹5 study reward"></progress><p id="walletStudyProgressText">Sign in to start earning.</p><small>Reward time server पर count होता है। Offline और पुराने study sessions का पैसा नहीं बनता।</small><button class="primary" data-view="timer">Start focus →</button></article>
+    <article class="panel wallet-referral-card"><small>REFER & EARN</small><h2>₹10 each. For both of you.</h2><p>अपने unique link से नया account बनवाएँ। आपको और नए user को ₹10–₹10 मिलेंगे।</p><label class="field" for="walletReferralLink">Your personal referral link</label><input id="walletReferralLink" readonly placeholder="Sign in to get your link"><div class="wallet-share-actions"><button class="primary" id="walletCopyLink" disabled>Copy link</button><button class="secondary" id="walletShareLink" disabled>Share</button></div><p id="walletReferralCount">0 successful referrals</p><p class="wallet-referral-rule">New account via invite link only · 1 reward per account · no self-referral. Email confirmation माँगी जाए तो पहले पूरी करें।</p><form id="walletReferralForm" class="hidden"><label class="field" for="walletReferralCode">Have an invite code?</label><div class="wallet-code-row"><input id="walletReferralCode" required maxlength="12" autocomplete="off" placeholder="12-character code"><button class="secondary" type="submit">Claim ₹10</button></div></form><p id="walletReferralStatus" role="status" aria-live="polite"></p></article></div>
+    <article class="wallet-note"><b>Reward credits, not bank cash.</b><p>Spend करने के नए items PRO & VIP Zone के <b>Reward Store · Upcoming</b> box में आएँगे। हर credit की 6-month expiry अलग है।</p><button class="text-btn" data-view="vipzone">See upcoming store →</button></article>
+  </div>
+  <div id="walletHistory" class="hidden" role="tabpanel" aria-labelledby="walletHistoryTab">
+    <article class="wallet-week-total"><div><small>LAST 7 CALENDAR DAYS</small><h2>Total earned</h2><p>आज और पिछले 6 दिन · Asia/Kolkata</p></div><strong id="walletWeekTotal">₹—</strong></article>
+    <div class="wallet-history-grid"><article class="panel"><h2>Daily earnings</h2><div id="walletDailyRows" class="wallet-daily-rows"></div></article><article class="panel"><h2>Earning history</h2><p class="wallet-history-caption">Study और referral credits, earning time और expiry के साथ।</p><div id="walletTransactions"></div><button class="secondary wide hidden" id="walletLoadMore">Load more</button><p id="walletHistoryStatus" role="status"></p></article></div>
+  </div>
+</section>
+
     <section class="view vip-zone-view" data-page="vipzone">
       <div class="vip-zone-hero"><span class="vip-zone-crown">👑</span><div><small>YPT BY RATHOD · EXCLUSIVE</small><h1>PRO & VIP Zone</h1><p>एक coupon से सभी premium experiences छह महीने के लिए unlock।</p></div><button class="primary" data-view="premium">Unlock access</button></div>
       <div class="vip-feature-grid">
@@ -217,7 +236,7 @@
         <button class="vip-feature-card vip" data-view="studyverse" data-requires="vip"><span>🌍</span><div><em>VIP</em><b>Rathod Studyverse</b><small>Virtual subject rooms and desks</small></div><i>›</i></button>
         <button class="vip-feature-card vip" data-view="community" data-requires="vip"><span>📱</span><div><em>VIP</em><b>Study Social Circle</b><small>Posts · replies · private messages</small></div><i>›</i></button>
         <button class="vip-feature-card vip" data-view="voice" data-requires="vip"><span>🎙️</span><div><em>VIP</em><b>Silent Voice Room</b><small>Private realtime audio study room</small></div><i>›</i></button>
-      </div><article class="vip-zone-note"><b>🔒 One secure access</b><p>एक active VIP coupon से PRO और VIP दोनों cards खुलेंगे। Expiry account से sync होगी।</p></article>
+      </div><article class="wallet-store-upcoming"><span aria-hidden="true">▣</span><div><small>UPCOMING</small><h3>Reward Store</h3><p>Wallet credits से खरीदने के लिए नए items यहाँ आएँगे। अभी purchases या cash withdrawal उपलब्ध नहीं हैं।</p></div><button class="secondary" data-view="wallet">Open Wallet</button></article><article class="vip-zone-note"><b>🔒 One secure access</b><p>एक active VIP coupon से PRO और VIP दोनों cards खुलेंगे। Expiry account से sync होगी।</p></article>
     </section>
 
     <section class="view" data-page="pwtracker"><div class="page-head"><div><small>PRO · PW CLASS TRACKER</small><h1>Track every PW class</h1><p>Subject चुनें, PW खोलें और वापस आकर progress save करें।</p></div><button class="ghost" data-view="vipzone">← VIP Zone</button></div><div class="pro-layout"><article class="panel"><form id="pwClassForm" class="stack-form"><label class="field">Subject<select id="pwSubject"><option>Biology</option><option>Physics</option><option>Chemistry</option></select></label><label class="field">Class / Lecture name<input id="pwLecture" required maxlength="100" placeholder="e.g. Human Reproduction 01"></label><label class="field">Progress %<input id="pwProgress" type="number" min="0" max="100" value="100"></label><div class="form-split"><label class="field">Questions attempted<input id="pwQuestions" type="number" min="0" value="0"></label><label class="field">Wrong<input id="pwWrong" type="number" min="0" value="0"></label></div><label class="check-line"><input id="pwComplete" type="checkbox"> Class complete</label><button class="primary wide" id="pwStartFinish">▶ Start PW Class</button></form><p id="pwActiveStatus" class="form-status"></p></article><article class="panel"><div class="panel-head"><div><small>DATE-WISE</small><h2>Class history</h2></div><input id="pwHistoryDate" type="date"></div><div id="pwHistory" class="history-list"></div></article></div></section>
@@ -320,13 +339,14 @@
 <dialog id="legalDialog"><button class="dialog-x" data-close>×</button><small>YPT STUDY BY RATHOD</small><h2 id="legalTitle">Policy</h2><div id="legalContent" class="legal-content"></div></dialog>
 
 <script src="vendor/supabase.min.js"></script>
+<script src="wallet.js?v=1" defer></script>
 <script src="avatars-girls.js?v=2" defer></script>
   <script src="avatars-boys.js?v=2" defer></script>
-  <script src="ypt.js?v=28" type="module"></script>
+  <script src="ypt.js?v=29" type="module"></script>
 <script src="community.js?v=24" type="module"></script>
 <script src="ytinfo.js?v=1" defer></script>
 <script src="vip-zone.js?v=20" type="module"></script>
-<script src="focus-rewards.js?v=32" defer></script><script src="feedback.js?v=1" defer></script><script src="rathod-ai.js?v=5" defer></script><script src="gyaan-auth-fix.js" defer></script><script src="rathod-compat.js?v=19" defer></script><script src="rathod-live-sync.js" defer></script><dialog id="contactDialog" class="help-dialog"><button class="dialog-x" data-close type="button">×</button><small>CONTACT ADMIN</small><h2>Seedha admin se baat karo</h2><p>Help, report ya feedback – kahin se bhi contact karo.</p><div class="contact-admin"><a class="contact-card" href="https://www.instagram.com/ashish30945/" target="_blank" rel="noopener noreferrer"><span class="ci">📸</span><div><b>@ashish30945</b><small>Instagram par DM karo · Admin</small></div></a>
+<script src="focus-rewards.js?v=32" defer></script><script src="feedback.js?v=1" defer></script><script src="rathod-ai.js?v=6" defer></script><script src="gyaan-auth-fix.js" defer></script><script src="rathod-compat.js?v=19" defer></script><script src="rathod-live-sync.js" defer></script><dialog id="contactDialog" class="help-dialog"><button class="dialog-x" data-close type="button">×</button><small>CONTACT ADMIN</small><h2>Seedha admin se baat karo</h2><p>Help, report ya feedback – kahin se bhi contact karo.</p><div class="contact-admin"><a class="contact-card" href="https://www.instagram.com/ashish30945/" target="_blank" rel="noopener noreferrer"><span class="ci">📸</span><div><b>@ashish30945</b><small>Instagram par DM karo · Admin</small></div></a>
         <a class="contact-card" href="https://t.me/Ashish_Thakur1" target="_blank" rel="noopener noreferrer"><span class="ci">✈</span><div><b>@Ashish_Thakur1</b><small>Telegram par message karo</small></div></a>
         <a class="contact-card" href="https://t.me/YPTSTUDY1" target="_blank" rel="noopener noreferrer"><span class="ci">👥</span><div><b>YPTSTUDY1</b><small>Official Telegram group join karo</small></div></a>
         <a class="contact-card" href="https://www.youtube.com/@factvision96" target="_blank" rel="noopener noreferrer"><span class="ci">▶</span><div><b>FACTVISION (@factvision96)</b><small>YouTube channel</small></div></a>

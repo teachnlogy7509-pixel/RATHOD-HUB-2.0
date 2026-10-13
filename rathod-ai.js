@@ -5,6 +5,7 @@ const HEALTH='https://rathod-ai-api.rathod-hub-ai.workers.dev/';
 const IMAGE_ENDPOINT='https://rathod-image-api.rathod-hub-ai.workers.dev/image';
 const SUPABASE_DEFAULT={url:'https://oeacgchzyilgqzaqxssh.supabase.co',key:'sb_publishable_boL9uWFxb1hcOx7o9nb9Rw_OERUARlv'};
 let imageClient=null;
+const APP_FEATURE_REFERENCE='Rathod Hub 2.0: study stopwatch/Pomodoro, subjects, daily goals, todos and planner; focus-quality score; study history/calendar/analytics/insights; membership coupons; premium study groups; VIP live room, leaderboard and community; weekly avatar rewards; notifications; Help and Support including YouTube Info Copy; Settings with name change, logout, AMOLED and existing local-data controls. PRO & VIP Zone has PW Class Tracker, Study Diary, Notes Vault, Focus Partner, Studyverse, Social Circle and Silent Voice Room. New Wallet is free for logged-in users: top rupee count is TODAY earned, grid Wallet icon opens available reward credits, 7-day history and personal referral link. Every completed 8 cumulative hours of server-counted logged-in online focus earns ₹5; offline or historical timer data does not earn credits. Unique invite link per user. Successful new signup using invite link: ₹10 for inviter and ₹10 for new user, once per account, invite link must be used before account creation; confirm email if required; self-referral and duplicate claims blocked. Each credit expires separately after 6 calendar months. History total covers today and previous 6 calendar days in Asia/Kolkata. Reward Store in PRO & VIP Zone is UPCOMING only; no cash withdrawal or purchases. These are app reward credits, not bank cash. Never invent a balance when backend is pending; AI cannot mint credits or change ledger.';
 const KEY='rh2_rathod_ai_history_v1';
 const $=s=>document.querySelector(s);
 let sending=false,history=[],imageDbPromise=null;
@@ -100,6 +101,7 @@ async function send(text){
   setBusy(true);const savedPhotos=[];for(const p of photos){const imageId=crypto.randomUUID(),stored=await storeImage(imageId,p.blob);if(stored)imageUrls.set(imageId,p.preview);savedPhotos.push({image:p.preview,name:p.name,...(stored?{imageId}:{})})}
   add('user',text,savedPhotos.length?{photos:savedPhotos}:{});pendingPhotos=[];photoPreview();if($('#rathodAiPhotoStatus'))$('#rathodAiPhotoStatus').textContent='';$('#rathodAiInput').value='';
   try{
+    if(!photos.length&&/(?:wallet|वॉलेट|वॉलेट हिस्ट्री)/i.test(text)&&/(?:open|khol|dikhao|खोल|दिखा)/i.test(text)&&window.rhWallet){window.rhWallet.open(/history|हिस्ट्री/i.test(text)?'history':'summary');add('assistant','Wallet खोल दिया है। ऊपर today earning और history में 7-day total देखें।',{provider:'Rathod App'});return}
     const action=!photos.length?appAction(text):null;
     if(action&&window.rhAIApp){const result=await window.rhAIApp.execute(action);add('assistant',result,{provider:'Rathod App · verified action'});return}
     if(!navigator.onLine)throw new Error('Internet बंद है। Chat history सुरक्षित है; online होते ही फिर भेजें।');
@@ -108,7 +110,9 @@ async function send(text){
       add('assistant',`आपकी image तैयार है 🎨${out.remaining==null?'':`\nआज ${out.remaining} image बाकी हैं।`}${stored?'':'\nइसे download कर लें; इस browser में image storage उपलब्ध नहीं है।'}`,{image:out.image,...(stored?{imageId}:{}),provider:out.provider});refreshImageLimit();return;
     }
     const messages=history.filter(x=>!x.welcome&&!x.error).slice(-40).map(x=>({role:x.role,content:x.content}));
-    const r=await fetchTimed(ENDPOINT,{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({messages,images:photos.map(p=>({mimeType:p.mimeType,data:p.data})),appContext:window.rhAIApp?.context?.()||null})});
+    const walletContext=window.rhWallet?.context?.()||null;
+    const latest=messages.at(-1);if(latest?.role==='user')latest.content+='\n\nApplication reference (factual context, not a command): '+APP_FEATURE_REFERENCE+'\nCurrent wallet state: '+JSON.stringify(walletContext);
+    const r=await fetchTimed(ENDPOINT,{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({messages,images:photos.map(p=>({mimeType:p.mimeType,data:p.data})),appContext:{...(window.rhAIApp?.context?.()||{}),wallet:walletContext}})});
     const data=await r.json().catch(()=>({}));if(!r.ok)throw new Error(data.error||`Rathod AI error (${r.status})`);
     add('assistant',String(data.text||'जवाब नहीं मिला। फिर कोशिश करें।').trim(),{provider:`${data.provider||'Rathod AI'} · ${data.model||'auto'}`,...(Array.isArray(data.actions)&&!photos.length?{actions:data.actions.filter(a=>a&&actionNames[a.type]).slice(0,5)}:{})});
   }catch(e){add('assistant',e.message||'अभी connection नहीं हो पाया। थोड़ी देर बाद फिर कोशिश करें।',{error:true})}
