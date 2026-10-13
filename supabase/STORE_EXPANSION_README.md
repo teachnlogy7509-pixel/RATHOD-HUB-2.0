@@ -1,0 +1,6 @@
+# Reward Store expansion
+Run `ypt_store_expansion.sql` after `ypt_reward_store.sql`. Prices are in paise and enforced by authenticated RPCs. Existing Analog Timer ₹20 and PDF ₹50 stay unchanged.
+Theme pack ₹40 (7 themes and 7 skins), Frames ₹30, Name effects ₹60, Celebrations ₹80, Dashboard ₹100, Group customization ₹120, Gift Pass ₹150, Voice Revision ₹200. Packs are one-time account unlocks. Android widget is free.
+Gift Pass unlocks the ability to gift; every gift additionally costs its item’s price. Friend identity is confirmed from their Wallet referral code. Server prices, wallet locks, earliest-expiry spending, request IDs and recipient ownership checks prevent overspend and repeat charges. Gifts transfer an item entitlement, never cash. No credits are granted by this migration.
+Voice notes stay in IndexedDB per account on the device. Limits: 5 min / note, 50 notes / 50 MB. Mic permissions are requested only on Record. Download backups before clearing browser/app data.
+The native Android widget requires APK v6. It shows the last app-synced summary, not a second running timer. Logout clears widget details. Build workflow bundles current root assets, preserving native fonts and files.

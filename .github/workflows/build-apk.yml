@@ -1,7 +1,7 @@
 name: Build Android APK
 permissions:
   contents: write
-on: {workflow_dispatch: {}, push: {branches: [main], paths: ['android-app/**']}}
+on: {workflow_dispatch: {}, push: {branches: [main], paths: ['android-app/**', 'index.html', '*.js', '*.css', 'vendor/**', 'icons/**', '.github/workflows/build-apk.yml']}}
 jobs:
   apk:
     runs-on: ubuntu-latest
@@ -20,6 +20,12 @@ jobs:
           cp "$(find /usr/share/fonts -iname 'NotoColorEmoji.ttf' | head -1)" android-app/app/src/main/assets/fonts/NotoColorEmoji.ttf
           cp "$(find /usr/share/fonts -iname 'NotoSansDevanagari-Regular.ttf' | head -1)" android-app/app/src/main/assets/fonts/DroidSansDevanagari-Regular.ttf
           cp "$(find /usr/share/fonts -iname 'NotoSans-Italic*.ttf' | head -1)" android-app/app/src/main/assets/fonts/NotoSans-Italic.ttf
+      - name: Bundle current website without removing native assets
+        shell: bash
+        run: |
+          mkdir -p android-app/app/src/main/assets
+          cp ./*.html ./*.js ./*.css manifest.webmanifest android-app/app/src/main/assets/
+          cp -R icons vendor android-app/app/src/main/assets/
       - run: gradle -p android-app :app:assembleDebug
       - uses: actions/upload-artifact@v4
         with: {name: YPT-Study-by-Rathod-APK, path: android-app/app/build/outputs/apk/debug/app-debug.apk}

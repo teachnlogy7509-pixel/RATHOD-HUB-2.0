@@ -1,0 +1,7 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android" android:id="@+id/study_widget_root" android:layout_width="match_parent" android:layout_height="match_parent" android:orientation="vertical" android:padding="16dp" android:background="@drawable/study_widget_background">
+ <TextView android:layout_width="match_parent" android:layout_height="wrap_content" android:text="YPT · STUDY" android:textSize="12sp" android:textStyle="bold" android:letterSpacing="0.08" android:textColor="#DCC38A"/>
+ <TextView android:id="@+id/widget_time" android:layout_width="match_parent" android:layout_height="wrap_content" android:layout_marginTop="6dp" android:text="0h 00m" android:textSize="26sp" android:textStyle="bold" android:textColor="#FFF1D0"/>
+ <TextView android:id="@+id/widget_task" android:layout_width="match_parent" android:layout_height="wrap_content" android:layout_marginTop="6dp" android:maxLines="2" android:ellipsize="end" android:text="Open app to focus" android:textSize="13sp" android:textColor="#D5CDBD"/>
+ <TextView android:id="@+id/widget_status" android:layout_width="match_parent" android:layout_height="wrap_content" android:layout_marginTop="8dp" android:maxLines="1" android:ellipsize="end" android:text="Tap to focus" android:textSize="11sp" android:textColor="#B7AE9E"/>
+</LinearLayout>
