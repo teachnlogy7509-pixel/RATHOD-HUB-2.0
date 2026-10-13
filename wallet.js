@@ -25,15 +25,14 @@ function renderHistory(){
 }
 function render(){
  const today=ready?cash(data.today_earned_paise):'₹—';
- if($('#walletTopToday'))$('#walletTopToday').textContent=today;
- if($('#walletGridToday'))$('#walletGridToday').textContent='Today · '+today;
- if($('#walletDesktopToday'))$('#walletDesktopToday').textContent=today+' today';
+ if($('#walletTopToday'))$('#walletTopToday').textContent=ready?new Intl.NumberFormat('en-IN',{minimumFractionDigits:0,maximumFractionDigits:2}).format(Number(data.today_earned_paise||0)/100):'—';
+ if($('#walletGridToday'))$('#walletGridToday').textContent=today;
  if($('#walletAvailable'))$('#walletAvailable').textContent=ready?cash(data.available_paise):'₹—';
  if($('#walletToday'))$('#walletToday').textContent=today;
- const st=$('#walletStatus');if(st){st.classList.toggle('ready',ready);st.innerHTML=esc(status)+(statusKind==='guest'?' <button class="text-btn" id="walletLogin">Sign in →</button>':'');$('#walletLogin')?.addEventListener('click',()=>window.rhWalletApp?.login?.())}
+ const st=$('#walletStatus');if(st){st.classList.toggle('ready',ready);st.classList.toggle('hidden',ready);st.innerHTML=esc(status)+(statusKind==='guest'?' <button class="text-btn" id="walletLogin">Sign in →</button>':'');$('#walletLogin')?.addEventListener('click',()=>window.rhWalletApp?.login?.())}
  const progress=Number(data?.progress_seconds||0);if($('#walletStudyProgress'))$('#walletStudyProgress').value=ready?progress:0;
- if($('#walletStudyProgressText'))$('#walletStudyProgressText').textContent=ready?`${Math.floor(progress/3600)}h ${Math.floor(progress%3600/60)}m / 8h toward next ₹5`:'Log in and enable Wallet to start server-counted earning.';
- if($('#walletExpiryNote'))$('#walletExpiryNote').textContent=ready&&data.expiring_7d_paise>0?`${cash(data.expiring_7d_paise)} expires within the next 7 days. Each earning lasts 6 months.`:'हर earning अपनी date से 6 महीने बाद expire होती है।';
+ if($('#walletStudyProgressText'))$('#walletStudyProgressText').textContent=ready?`${Math.floor(progress/3600)}h ${Math.floor(progress%3600/60)}m / 8h`:'Sign in to start earning.';
+ if($('#walletExpiryNote'))$('#walletExpiryNote').textContent=ready&&data.expiring_7d_paise>0?`${cash(data.expiring_7d_paise)} expiring soon`:'6 months per credit';
  const link=inviteLink();if($('#walletReferralLink'))$('#walletReferralLink').value=link;
  if($('#walletCopyLink'))$('#walletCopyLink').disabled=!link;if($('#walletShareLink'))$('#walletShareLink').disabled=!link;
  if($('#walletReferralCount'))$('#walletReferralCount').textContent=`${ready?data.referrals_count:0} successful referrals`;
@@ -71,7 +70,7 @@ async function loadMore(){
 }
 function tab(which){for(const part of ['summary','history']){$(`[data-wallet-tab="${part}"]`)?.classList.toggle('active',part===which);$(`[data-wallet-tab="${part}"]`)?.setAttribute('aria-selected',String(part===which));$(part==='summary'?'#walletSummary':'#walletHistory')?.classList.toggle('hidden',part!==which)}if(which==='history')refresh()}
 function open(which='summary'){window.rhWalletApp?.navigate?.('wallet');tab(which)}
-async function copyLink(){const link=inviteLink();if(!link)return;try{await navigator.clipboard.writeText(link);$('#walletReferralStatus').textContent='Your personal referral link copied.'}catch{$('#walletReferralLink').select();$('#walletReferralStatus').textContent='Link selected. Use Copy to share it.'}}
+async function copyLink(){const link=inviteLink();if(!link)return;try{await navigator.clipboard.writeText(link);$('#walletReferralStatus').textContent='Your personal referral link copied.'}catch{const details=$('.wallet-link-details');if(details)details.open=true;$('#walletReferralLink').select();$('#walletReferralStatus').textContent='Link selected. Use Copy to share it.'}}
 async function shareLink(){const url=inviteLink();if(!url)return;if(navigator.share)try{await navigator.share({title:'Study with me on Rathod Hub',text:'Join with my link. New signups: ₹10 reward credits for both of us.',url});return}catch(e){if(e.name==='AbortError')return}await copyLink()}
 function context(){return {type:'app_reward_credits_not_bank_cash',backendStatus:statusKind,
  rules:{study:'Each completed 8 cumulative hours of server-counted, logged-in online focus earns ₹5. No offline or old-session conversion.',referral:'Unique link per user; successful eligible new signup credits ₹10 to both inviter and new user, once. The invite link must be used before account creation; confirm email if required. No self or duplicate referral.',expiry:'Every earning expires separately 6 calendar months after credit. Available balance excludes expired credits.',header:'Top rupee count is today’s earnings, NOT total available balance.',history:'7 calendar days: today and previous 6 days, Asia/Kolkata. Includes both study and referral credits.',store:'Reward Store is UPCOMING in PRO & VIP Zone. No buying or cash withdrawal is available yet.'},
@@ -82,7 +81,7 @@ function boot(){render();$('#walletRefresh')?.addEventListener('click',refresh);
  let n=0;const timer=setInterval(()=>{if(window.rhWalletApp){clearInterval(timer);onAuth(user())}else if(++n>100)clearInterval(timer)},100);
  setInterval(()=>{if(window.rhWalletApp?.running?.()&&ready)focus('tick')},20000);
  setInterval(()=>{if(ready&&!document.hidden)refresh()},60000);
- window.addEventListener('online',refresh);document.addEventListener('visibilitychange',()=>{if(!document.hidden&&user())refresh()});window.addEventListener('rathod-view-changed',e=>{if(e.detail?.view==='wallet')refresh()});
+ window.addEventListener('online',refresh);document.addEventListener('visibilitychange',()=>{if(!document.hidden&&user())refresh()});window.addEventListener('rathod-view-changed',e=>{if(e.detail?.view==='wallet'){window.scrollTo({top:0,behavior:'instant'});const view=$('[data-page=wallet]');if(view)view.scrollTop=0;refresh()}});
 }
 if(document.readyState==='loading')document.addEventListener('DOMContentLoaded',boot);else boot();
 })();
